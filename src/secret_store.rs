@@ -1,3 +1,4 @@
+use std::collections::hash_map::Iter;
 use anyhow::{anyhow, Result};
 use std::collections::HashMap;
 use std::fs;
@@ -19,12 +20,12 @@ pub struct SecretStore {
 }
 
 impl SecretStore {
-    pub fn new(password: &str, file_path: &str) -> Result<Self> {
+    pub fn new(password: String, file_path: String) -> Result<Self> {
         let key = Key::from(pbkdf2_hmac_array::<Sha256, ENCRYPTION_KEY_SIZE>(password.as_bytes(), b"", HASHING_ROUNDS));
         Ok(Self {
-            contents: Self::decrypt_store(&key, file_path)?,
+            contents: Self::decrypt_store(&key, &file_path)?,
             key,
-            file_path: file_path.to_owned()
+            file_path
         })
     }
 
@@ -34,10 +35,6 @@ impl SecretStore {
 
     pub fn get(&self, name: &str) -> Option<&String> {
         self.contents.get(name)
-    }
-
-    pub fn clear(&mut self) {
-        self.contents.clear();
     }
 
     // static method since this runs before a new instance is created
@@ -80,6 +77,10 @@ impl SecretStore {
             .join("\n");
 
         fs::write(&self.file_path, &file_contents).expect("SecretStore file/location to be valid and writable");
+    }
+
+    pub fn iter(&self) -> Iter<'_, String, String> {
+        self.contents.iter()
     }
 }
 
