@@ -13,7 +13,6 @@ mod args;
 mod commands;
 
 /* TODO
- * - program should recover from a bad command given (Command::try_parse_from, but still want to log the error)
  * - add command to get just a single item (vs show which shows all)
  * - give user options during runtime to perform CRUD operations
  * - use SecureString class that zeroes itself out on drop
@@ -30,27 +29,35 @@ fn main() -> Result<()> {
     let mut store = SecretStore::new(args.password, args.file_path).unwrap();
 
     println!("SecretStore\n-----------");
-    loop  {
+    loop {
         print!(">> ");
         let input: String = read!("{}\n");
-        match Command::parse_from(input.trim().split(" ")) {
-            SET { item_name, item_value } => {
-                store.set(&item_name, &item_value);
-                println!("Item set successfully.");
-            },
-            DELETE { item_name } => {
-                store.delete(&item_name);
-                println!("Item deleted successfully.");
-            },
-            SHOW => {
-                for (item_name, item_value) in store.iter() {
-                    println!("{item_name}: {item_value}");
-                }
-            },
-            EXIT => break
+        let input = Command::try_parse_from(input.trim().split(" "));
+        match input {
+            Ok(command) => handle_command(&mut store, &command),
+            Err(error) => {
+                error.print().unwrap();
+                continue;
+            }
         }
-        println!();
     }
+}
 
-    Ok(())
+fn handle_command(store: &mut SecretStore, command: &Command) {
+    match command {
+        SET { item_name, item_value } => {
+            store.set(&item_name, &item_value);
+            println!("Item set successfully.");
+        },
+        DELETE { item_name } => {
+            store.delete(&item_name);
+            println!("Item deleted successfully.");
+        },
+        SHOW => {
+            for (item_name, item_value) in store.iter() {
+                println!("{item_name}: {item_value}");
+            }
+        },
+        EXIT => std::process::exit(0)
+    }
 }
