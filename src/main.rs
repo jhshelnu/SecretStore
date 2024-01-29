@@ -27,22 +27,17 @@ mod commands;
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    let mut store = SecretStore::new(args.password, args.file_path).unwrap();
+    let mut store = SecretStore::new(args.password, args.file_path)?;
 
     println!("SecretStore\n-----------");
     loop {
         print!(">> ");
         let input: String = read!("{}\n");
         match Command::try_parse_from(input.trim().split(" ")) {
-            Ok(command) => {
-                handle_command(&mut store, &command);
-                println!();
-            },
-            Err(error) => {
-                error.print().unwrap();
-                continue;
-            }
+            Ok(command) => handle_command(&mut store, &command),
+            Err(error) => error.print()?
         }
+        println!();
     }
 }
 
