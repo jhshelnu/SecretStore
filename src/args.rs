@@ -10,5 +10,5 @@ pub struct Args {
 
     /// Path to your SecretStore file (usually named SecretStore)
     #[arg(short, long, default_value_t = String::from("./SecretStore"))]
-    pub file_path: String
+    pub file_path: String,
 }

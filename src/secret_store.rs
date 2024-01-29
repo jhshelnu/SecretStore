@@ -29,12 +29,16 @@ impl SecretStore {
         })
     }
 
-    pub fn put(&mut self, name: &str, value: &str) {
-        self.contents.insert(name.to_owned(), value.to_owned());
+    pub fn set(&mut self, item_name: &str, item_value: &str) {
+        self.contents.insert(item_name.to_owned(), item_value.to_owned());
     }
 
-    pub fn get(&self, name: &str) -> Option<&String> {
-        self.contents.get(name)
+    pub fn get(&self, item_name: &str) -> Option<&String> {
+        self.contents.get(item_name)
+    }
+
+    pub fn delete(&mut self, item_name: &str) {
+        self.contents.remove(item_name);
     }
 
     // static method since this runs before a new instance is created
@@ -43,8 +47,8 @@ impl SecretStore {
         let mut contents = HashMap::new();
 
         for line in file_contents.lines() {
-            // grab the item_key and item_value (encrypted and stored as base64)
-            let (item_key, item_value) = line.split_once(" ").ok_or_else(|| anyhow!(INVALID_FORMAT_MSG))?;
+            // grab the item_name and item_value (encrypted and stored as base64)
+            let (item_name, item_value) = line.split_once(" ").ok_or_else(|| anyhow!(INVALID_FORMAT_MSG))?;
 
             // decode the base64 value
             let item_value = base64_decode(item_value).map_err(|_| anyhow!(INVALID_FORMAT_MSG))?;
@@ -55,7 +59,7 @@ impl SecretStore {
             // convert the decrypted bytes into a UTF-8 String
             let item_value = String::from_utf8(item_value)?;
 
-            contents.insert(item_key.to_owned(), item_value);
+            contents.insert(item_name.to_owned(), item_value);
         }
 
         Ok(contents)
@@ -64,15 +68,15 @@ impl SecretStore {
     // non-static method since this runs after an instance has been created
     fn encrypt_store(&self) {
         let file_contents = self.contents.iter()
-            .map(|(item_key, item_value)| {
+            .map(|(item_name, item_value)| {
                 let item_value_encrypted = encrypt(&self.key, item_value.as_bytes()).unwrap();
-                (item_key, item_value_encrypted)
+                (item_name, item_value_encrypted)
             })
-            .map(|(item_key, item_value)| {
+            .map(|(item_name, item_value)| {
                 let item_value_base64_encoded = base64_encode(&item_value);
-                (item_key, item_value_base64_encoded)
+                (item_name, item_value_base64_encoded)
             })
-            .map(|(item_key, item_value)| format!("{item_key} {item_value}"))
+            .map(|(item_name, item_value)| format!("{item_name} {item_value}"))
             .collect::<Vec<String>>()
             .join("\n");
 
