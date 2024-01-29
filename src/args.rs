@@ -4,11 +4,11 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(about, long_about = None)]
 pub struct Args {
-    /// Master password used to decrypt your SecretStore
+    /// Master password used to decrypt your SecretStore file
     #[arg(short, long)]
     pub password: String,
 
-    /// Path to your SecretStore file (usually named SecretStore)
-    #[arg(short, long, default_value_t = String::from("./SecretStore"))]
+    /// Path to your SecretStore file
+    #[arg(short, long, default_value_t = String::from("./Secretsfile"))]
     pub file_path: String,
 }

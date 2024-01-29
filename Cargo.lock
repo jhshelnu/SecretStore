@@ -305,7 +305,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "security"
+name = "secret_store"
 version = "0.1.0"
 dependencies = [
  "anyhow",
