@@ -21,6 +21,7 @@ mod commands;
  * - expand Secrets to have many fields which all get encrypted together
  * - encrypt/decrypt on a per-file basis rather than per-item
  * - tests!
+ * - add "--version" command
  */
 
 fn main() -> Result<()> {
@@ -32,9 +33,11 @@ fn main() -> Result<()> {
     loop {
         print!(">> ");
         let input: String = read!("{}\n");
-        let input = Command::try_parse_from(input.trim().split(" "));
-        match input {
-            Ok(command) => handle_command(&mut store, &command),
+        match Command::try_parse_from(input.trim().split(" ")) {
+            Ok(command) => {
+                handle_command(&mut store, &command);
+                println!();
+            },
             Err(error) => {
                 error.print().unwrap();
                 continue;
