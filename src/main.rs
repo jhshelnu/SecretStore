@@ -56,6 +56,9 @@ fn handle_command(store: &mut SecretStore, command: &Command) {
                 println!("{item_name}: {item_value}");
             }
         },
-        EXIT => std::process::exit(0)
+        EXIT => {
+            store.save();
+            std::process::exit(0);
+        }
     }
 }

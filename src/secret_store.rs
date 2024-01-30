@@ -23,7 +23,7 @@ impl SecretStore {
     pub fn new(password: String, file_path: String) -> Result<Self> {
         let key = Key::from(pbkdf2_hmac_array::<Sha256, ENCRYPTION_KEY_SIZE>(password.as_bytes(), b"", HASHING_ROUNDS));
         Ok(Self {
-            contents: Self::decrypt_store(&key, &file_path)?,
+            contents: Self::load(&key, &file_path)?,
             key,
             file_path
         })
@@ -42,7 +42,7 @@ impl SecretStore {
     }
 
     // static method since this runs before a new instance is created
-    fn decrypt_store(key: &Key, file_path: &str) -> Result<HashMap<String, String>> {
+    fn load(key: &Key, file_path: &str) -> Result<HashMap<String, String>> {
         let file_contents = fs::read_to_string(file_path).unwrap_or(String::new());
         let mut contents = HashMap::new();
 
@@ -66,7 +66,7 @@ impl SecretStore {
     }
 
     // non-static method since this runs after an instance has been created
-    fn encrypt_store(&self) {
+    pub fn save(&self) {
         let file_contents = self.contents.iter()
             .map(|(item_name, item_value)| {
                 let item_value_encrypted = encrypt(&self.key, item_value.as_bytes()).unwrap();
@@ -90,6 +90,6 @@ impl SecretStore {
 
 impl Drop for SecretStore {
     fn drop(&mut self) {
-        self.encrypt_store();
+        self.save();
     }
 }
