@@ -47,8 +47,8 @@ fn handle_command(store: &mut SecretStore, command: &Command) -> Result<()> {
             println!("Login created successfully.");
         },
         READ => {
-            for item in store.read()? {
-                println!("{}", item);
+            for login in store.read()? {
+                println!("{}", login);
             }
         },
         UPDATE { id, name, username, password, url } => {
