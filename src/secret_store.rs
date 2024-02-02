@@ -1,95 +1,91 @@
-use std::collections::hash_map::Iter;
+use std::path::Path;
 use anyhow::{anyhow, Result};
-use std::collections::HashMap;
-use std::fs;
-use chacha20poly1305::{Key};
-use pbkdf2::pbkdf2_hmac_array;
-use sha2::Sha256;
-use crate::base64_encode_decode::{base64_decode, base64_encode};
-use crate::encrypt_decrypt::{decrypt, encrypt};
-
-const HASHING_ROUNDS: u32 = 1_000;
-const ENCRYPTION_KEY_SIZE: usize = 32;
-
-const INVALID_FORMAT_MSG: &str = "Invalid SecretStore format";
+use rusqlite::{Connection, DatabaseName, OpenFlags, params};
+use crate::login::Login;
 
 pub struct SecretStore {
-    contents: HashMap<String, String>,
-    key: Key,
-    file_path: String
+    conn: Connection
 }
 
 impl SecretStore {
     pub fn new(password: String, file_path: String) -> Result<Self> {
-        let key = Key::from(pbkdf2_hmac_array::<Sha256, ENCRYPTION_KEY_SIZE>(password.as_bytes(), b"", HASHING_ROUNDS));
-        Ok(Self {
-            contents: Self::load(&key, &file_path)?,
-            key,
-            file_path
-        })
-    }
-
-    pub fn set(&mut self, item_name: &str, item_value: &str) {
-        self.contents.insert(item_name.to_owned(), item_value.to_owned());
-    }
-
-    pub fn get(&self, item_name: &str) -> Option<&String> {
-        self.contents.get(item_name)
-    }
-
-    pub fn delete(&mut self, item_name: &str) {
-        self.contents.remove(item_name);
-    }
-
-    // static method since this runs before a new instance is created
-    fn load(key: &Key, file_path: &str) -> Result<HashMap<String, String>> {
-        let file_contents = fs::read_to_string(file_path).unwrap_or(String::new());
-        let mut contents = HashMap::new();
-
-        for line in file_contents.lines() {
-            // grab the item_name and item_value (encrypted and stored as base64)
-            let (item_name, item_value) = line.split_once(" ").ok_or_else(|| anyhow!(INVALID_FORMAT_MSG))?;
-
-            // decode the base64 value
-            let item_value = base64_decode(item_value).map_err(|_| anyhow!(INVALID_FORMAT_MSG))?;
-
-            // decrypt the item_value bytes
-            let item_value = decrypt(&key, &item_value).map_err(|_| anyhow!(INVALID_FORMAT_MSG))?;
-
-            // convert the decrypted bytes into a UTF-8 String
-            let item_value = String::from_utf8(item_value)?;
-
-            contents.insert(item_name.to_owned(), item_value);
+        if Path::new(&file_path).is_file() {
+            return Err(anyhow!("A file already exists at the specified file path. Try renaming the existing file or rerunning without '--create'"));
         }
 
-        Ok(contents)
+        let mut conn = Connection::open_with_flags(file_path, OpenFlags::default())?;
+        conn.pragma_update(Some(DatabaseName::Main), "key", password)?;
+        Self::init_db_schema(&mut conn)?;
+        Ok(Self { conn })
     }
 
-    // non-static method since this runs after an instance has been created
-    pub fn save(&self) {
-        let file_contents = self.contents.iter()
-            .map(|(item_name, item_value)| {
-                let item_value_encrypted = encrypt(&self.key, item_value.as_bytes()).unwrap();
-                (item_name, item_value_encrypted)
+    pub fn from_file(password: String, file_path: String) -> Result<Self> {
+        if !Path::new(&file_path).is_file() {
+            return Err(anyhow!("No SecretStore file found at the specified file path. Try a different file path or rerunning with '--create'"));
+        }
+
+        let conn = Connection::open_with_flags(file_path, OpenFlags::default() & !OpenFlags::SQLITE_OPEN_CREATE)?;
+        conn.pragma_update(Some(DatabaseName::Main), "key", password)?;
+        Ok(Self { conn })
+    }
+
+    fn init_db_schema(conn: &mut Connection) -> Result<()> {
+        conn.execute("create table login (
+            id integer primary key,
+            name text not null,
+            username text not null,
+            password text not null,
+            url text not null
+        )", ())?;
+
+        Ok(())
+    }
+
+    pub fn create(&mut self, name: &str, username: &str, password: &str, url: &str) -> Result<()> {
+        self.conn.execute("insert into login (name, username, password, url)
+            values (:name, :username, :password, :url)", &[
+                (":name",     name),
+                (":username", username),
+                (":password", password),
+                (":url",      url),
+        ])?;
+        Ok(())
+    }
+
+    pub fn read(&self) -> Result<Vec<Login>> {
+        let mut stmt = self.conn.prepare("select id, name, username, password, url from login")?;
+        let login_results = stmt.query_map([], |row|
+            Ok(Login {
+                id:       row.get(0)?,
+                name:     row.get(1)?,
+                username: row.get(2)?,
+                password: row.get(3)?,
+                url:      row.get(4)?,
             })
-            .map(|(item_name, item_value)| {
-                let item_value_base64_encoded = base64_encode(&item_value);
-                (item_name, item_value_base64_encoded)
-            })
-            .map(|(item_name, item_value)| format!("{item_name} {item_value}"))
-            .collect::<Vec<String>>()
-            .join("\n");
+        )?;
 
-        fs::write(&self.file_path, &file_contents).expect("SecretStore file/location to be valid and writable");
+        let mut logins = Vec::new();
+        for login_result in login_results {
+            logins.push(login_result?);
+        }
+
+        Ok(logins)
     }
 
-    pub fn iter(&self) -> Iter<'_, String, String> {
-        self.contents.iter()
+    pub fn update(&mut self, id: &u32, name: &String, username: &String, password: &String, url: &String) -> Result<()> {
+        self.conn.execute("
+            update login set
+                name = ?2,
+                username = ?3,
+                password = ?4,
+                url = ?5
+            where id = ?1",
+  params![id, name, username, password, url])?;
+        Ok(())
     }
-}
 
-impl Drop for SecretStore {
-    fn drop(&mut self) {
-        self.save();
+    pub fn delete(&mut self, id: &u32) -> Result<()> {
+        self.conn.execute("delete from login where id = :id", &[(":id", id)])?;
+        Ok(())
     }
 }

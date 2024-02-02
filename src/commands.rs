@@ -1,18 +1,22 @@
 use clap::Parser;
 
-#[derive(Parser, Debug)]
-#[clap(no_binary_name = true, override_usage = "set|delete|show|exit|help [args]")]
+#[derive(Parser)]
+#[clap(no_binary_name = true, override_usage = "create|read|update|delete|exit|help [args]")]
 pub enum Command {
-    /// Add a new item or update an existing one by name
-    #[clap(override_usage = "set <ITEM_NAME> <ITEM_VALUE>")]
-    SET { item_name: String, item_value: String },
+    /// Create a new Login
+    #[clap(override_usage = "create <NAME> <USERNAME> <PASSWORD> <URL>")]
+    CREATE { name: String, username: String, password: String, url: String },
 
-    /// Delete an existing item by name
-    #[clap(override_usage = "delete <ITEM_NAME>")]
-    DELETE { item_name: String },
+    /// Read out all Logins
+    READ,
 
-    /// Show all items
-    SHOW,
+    /// Update an existing Login
+    #[clap(override_usage = "update <ID> <NAME> <USERNAME> <PASSWORD> <URL>")]
+    UPDATE { id: u32, name: String, username: String, password: String, url: String },
+
+    /// Delete an existing Login by ID
+    #[clap(override_usage = "delete <ID>")]
+    DELETE { id: u32 },
 
     /// Exit SecretStore
     EXIT,
