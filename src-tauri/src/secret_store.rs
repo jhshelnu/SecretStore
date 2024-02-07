@@ -3,6 +3,7 @@ use anyhow::{anyhow, Result};
 use rusqlite::{Connection, DatabaseName, OpenFlags, params};
 use crate::login::Login;
 
+#[derive(Debug)]
 pub struct SecretStore {
     conn: Connection
 }
@@ -19,13 +20,14 @@ impl SecretStore {
         Ok(Self { conn })
     }
 
-    pub fn from_file(password: String, file_path: String) -> Result<Self> {
+    pub fn from_file(file_path: &str, password: &str) -> Result<Self> {
         if !Path::new(&file_path).is_file() {
             return Err(anyhow!("No SecretStore file found at the specified file path. Try a different file path or rerunning with '--create'"));
         }
 
         let conn = Connection::open_with_flags(file_path, OpenFlags::default() & !OpenFlags::SQLITE_OPEN_CREATE)?;
         conn.pragma_update(Some(DatabaseName::Main), "key", password)?;
+        let _ = conn.prepare("select 1 from login limit 1")?.query([])?; // will throw if the file + password combination is wrong
         Ok(Self { conn })
     }
 

@@ -1,14 +1,14 @@
-import { Inter } from "next/font/google";
-import "./globals.css";
-import React from "react";
-import {CssVarsProvider} from "@mui/joy";
+import { Inter } from "next/font/google"
+import "./globals.css"
+import React from "react"
+import {CssVarsProvider} from "@mui/joy"
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] })
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
@@ -16,9 +16,9 @@ export default function RootLayout({
       <title>SecretStore</title>
       <meta name="viewport" content="initial-scale=1, width=device-width"/>
     </head>
-    <body className={inter.className}>
+    <body className={`${inter.className} h-screen`}>
       <CssVarsProvider defaultMode="dark">{children}</CssVarsProvider>
     </body>
     </html>
-  );
+  )
 }
