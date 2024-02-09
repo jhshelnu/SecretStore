@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background-rgb: #262626;
+  --highlight-rgb: #1d3a5a;
+  --selected-rgb: #0570eb;
+}
+
+.bg-color {
+  background-color: var(--background-rgb);
+}
+
+.bg-color-hoverable {
+  background-color: var(--background-rgb);
+}
+
+.bg-color-hoverable:hover {
+  background-color: var(--highlight-rgb);
+}
+
+.bg-color-selected {
+  background-color: var(--selected-rgb);
+}
+
 body {
-  background-color: #36393e;
+  background-color: var(--background-rgb);
 }

@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {invoke} from "@tauri-apps/api";
-import {Card} from "@mui/joy";
+import {Card, CardContent, Typography} from "@mui/joy";
 
 interface Login {
     id: number,
@@ -14,7 +14,7 @@ interface Login {
 
 export default function Logins() {
     let [logins, setLogins] = useState<Login[]>([])
-
+    let [selectedLogin, setSelectedLogin] = useState<Login | null>(null);
 
     useEffect(() => {
         invoke("get_secretstore_items")
@@ -24,14 +24,48 @@ export default function Logins() {
 
     return (
         <div className="flex">
-            <div id="logins-list" className="flex flex-col w-1/3 min-w-9 h-screen bg-gray-600">
+            <div id="logins-list" className="flex flex-col h-screen">
                 {logins.map(login =>
-                    <Card key={login.id} variant="soft" color="neutral" size="md" orientation="horizontal" className="h-20 mb-3">
-                        <b>{login.name}</b>
-                        <br/>
-                        <div>{login.username}</div>
+                    <Card
+                        key={login.id}
+                        variant="soft"
+                        size="md"
+                        orientation="horizontal"
+                        className={`${login == selectedLogin ? "bg-color-selected" : "bg-color-hoverable"} py-2`}
+                        onClick={() => setSelectedLogin(login)}
+                    >
+                        <img
+                            src={`${login.url}/favicon.ico`}
+                            loading="lazy"
+                            alt=""
+                            className="w-8 h-8 my-auto"
+                        />
+                        <CardContent orientation="vertical" className="w-60">
+                            <Typography level="title-md" className="pb-0 mb-0">{login.name}</Typography>
+                            <Typography level="body-sm">{login.username}</Typography>
+                        </CardContent>
                     </Card>
                 )}
+                <Typography level="body-sm" className="mx-auto">
+                    {logins.length} {logins.length === 1 ? 'item' : 'items'}
+                </Typography>
+            </div>
+            <div className="w-full h-screen">
+                {selectedLogin &&
+                    <Card
+                        orientation="horizontal"
+                        className="h-screen bg-color"
+                        variant="soft"
+                    >
+                        <img
+                            src={`${selectedLogin.url}/favicon.ico`}
+                            loading="lazy"
+                            alt=""
+                            className="w-10 h-10"
+                        />
+                        <Typography level="title-lg" className="h-auto">{selectedLogin.name}</Typography>
+                    </Card>
+                }
             </div>
         </div>
     )
