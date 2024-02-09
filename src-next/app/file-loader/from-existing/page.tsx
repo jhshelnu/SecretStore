@@ -1,7 +1,7 @@
 'use client'
 
 import {useState} from "react"
-import {Button, Input, SvgIcon} from "@mui/joy";
+import {Box, Button, Input, SvgIcon, Typography} from "@mui/joy";
 import {open} from "@tauri-apps/api/dialog";
 import {desktopDir} from "@tauri-apps/api/path";
 import {invoke} from "@tauri-apps/api";
@@ -12,7 +12,7 @@ export default function FromExisting() {
 
     let [filePath, setFilePath] = useState('')
     let [password, setPassword] = useState('')
-    let [error, setError] = useState('')
+    let [error, setError] = useState(false)
 
     async function getFilePathFromFileDialog() {
         let selectedFilePath = await open({
@@ -41,9 +41,9 @@ export default function FromExisting() {
     }
 
     return (
-        <div className="m-auto my-auto w-1/2 h-1/2">
-            {error && <h1 className="text-red-500">{error}</h1>}
-            <div className="flex">
+        <Box display="flex" flexDirection="column" alignItems="center" gap="1em">
+            <Typography level="title-lg" fontSize="50px">SecretStore</Typography>
+            <Box display="flex">
                 <Button
                     component="label"
                     variant="soft"
@@ -65,20 +65,24 @@ export default function FromExisting() {
                         </SvgIcon>
                     }
                     onClick={getFilePathFromFileDialog}
+                    endDecorator={filePath ? "✅" : ""}
                 >
                     Select Secretsfile
                 </Button>
-                {filePath && <h6 className="text-green-500 h-auto my-auto mx-4">{filePath}</h6>}
-            </div>
+            </Box>
             <Input
-                className="my-8"
                 type="password"
-                size="md"
+                size="lg"
+                variant="soft"
+                error={error}
                 placeholder="Enter your master password..."
+                sx={{
+                    width: "18em"
+                }}
                 value={password}
-                onInput={({ target }) => setPassword((target as HTMLInputElement).value)}
+                onInput={({target}) => setPassword((target as HTMLInputElement).value)}
             />
             <Button onClick={loadSecretStore} disabled={!filePath || !password}>Submit</Button>
-        </div>
+        </Box>
     );
 }

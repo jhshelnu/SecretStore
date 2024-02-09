@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {invoke} from "@tauri-apps/api";
-import {Card, CardContent, Typography} from "@mui/joy";
+import {Box, Card, CardContent, List, Typography} from "@mui/joy";
 
 interface Login {
     id: number,
@@ -23,50 +23,63 @@ export default function Logins() {
     }, []);
 
     return (
-        <div className="flex">
-            <div id="logins-list" className="flex flex-col h-screen">
-                {logins.map(login =>
-                    <Card
-                        key={login.id}
-                        variant="soft"
-                        size="md"
-                        orientation="horizontal"
-                        className={`${login == selectedLogin ? "bg-color-selected" : "bg-color-hoverable"} py-2`}
-                        onClick={() => setSelectedLogin(login)}
-                    >
-                        <img
-                            src={`${login.url}/favicon.ico`}
-                            loading="lazy"
-                            alt=""
-                            className="w-8 h-8 my-auto"
-                        />
-                        <CardContent orientation="vertical" className="w-60">
-                            <Typography level="title-md" className="pb-0 mb-0">{login.name}</Typography>
-                            <Typography level="body-sm">{login.username}</Typography>
-                        </CardContent>
-                    </Card>
-                )}
-                <Typography level="body-sm" className="mx-auto">
+        <Box display="flex" flexDirection="row">
+            <Box display="flex" flexDirection="column">
+                <List>
+                    {logins.map(login =>
+                        <Card
+                            key={login.id}
+                            variant="soft"
+                            size="md"
+                            orientation="horizontal"
+                            className={login == selectedLogin ? "bg-color-selected" : "bg-color-hoverable"}
+                            sx={{
+                                width: "15em"
+                            }}
+                            onClick={() => setSelectedLogin(login)}
+                        >
+                            <Box
+                                component="img"
+                                src={`${login.url}/favicon.ico`}
+                                loading="lazy"
+                                alt=""
+                                sx={{
+                                    width: '2.5em',
+                                    height: '2.5em'
+                                }}
+                            />
+                            <CardContent orientation="vertical">
+                                <Typography level="title-md">{login.name}</Typography>
+                                <Typography level="body-sm">{login.username}</Typography>
+                            </CardContent>
+                        </Card>
+                    )}
+                </List>
+                <Typography level="body-sm" alignSelf="center">
                     {logins.length} {logins.length === 1 ? 'item' : 'items'}
                 </Typography>
-            </div>
-            <div className="w-full h-screen">
+            </Box>
+            <Box>
                 {selectedLogin &&
                     <Card
                         orientation="horizontal"
-                        className="h-screen bg-color"
+                        className="bg-color"
                         variant="soft"
                     >
-                        <img
+                        <Box
+                            component="img"
                             src={`${selectedLogin.url}/favicon.ico`}
                             loading="lazy"
                             alt=""
-                            className="w-10 h-10"
+                            sx={{
+                                width: '3.8em',
+                                height: '3.8em'
+                            }}
                         />
-                        <Typography level="title-lg" className="h-auto">{selectedLogin.name}</Typography>
+                        <Typography level="h3" alignSelf="center">{selectedLogin.name}</Typography>
                     </Card>
                 }
-            </div>
-        </div>
+            </Box>
+        </Box>
     )
 }

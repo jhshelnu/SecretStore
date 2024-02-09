@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --background-rgb: #262626;
   --highlight-rgb: #1d3a5a;
@@ -26,4 +22,9 @@
 
 body {
   background-color: var(--background-rgb);
+}
+
+/* Disables the default eye icon in password fields on MS Edge Chromium */
+::-ms-reveal {
+  display: none;
 }

@@ -16,9 +16,10 @@ export default function RootLayout({
         <html lang="en">
             <head>
                 <title>SecretStore</title>
+                <meta charSet="UTF-8"/>
                 <meta name="viewport" content="initial-scale=1, width=device-width"/>
             </head>
-            <body className={`${inter.className} h-screen`}>
+            <body className={`${inter.className}`}>
                 <CssVarsProvider defaultMode="dark">{children}</CssVarsProvider>
             </body>
         </html>
