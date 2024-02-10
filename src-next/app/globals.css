@@ -24,6 +24,10 @@ body {
   background-color: var(--background-rgb);
 }
 
+.purple {
+  color: #bbadff;
+}
+
 /* Disables the default eye icon in password fields on MS Edge Chromium */
 ::-ms-reveal {
   display: none;
