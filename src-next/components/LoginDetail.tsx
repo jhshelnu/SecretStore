@@ -1,5 +1,6 @@
-import {Box, Card, List, ListDivider, ListItem, ListItemButton, Typography} from "@mui/joy";
+import {Box, Button, ButtonGroup, Card, List, ListDivider, ListItem, ListItemButton, Typography} from "@mui/joy";
 import Login from "@/types/Login";
+import LoginDetailField from "@/components/LoginDetailField";
 
 type Props = {
     login: Login
@@ -30,36 +31,30 @@ export default function LoginDetail({ login }: Props) {
                 />
                 <Typography level="h3" alignSelf="center">{login.name}</Typography>
             </Card>
-            <List
-                size="sm"
-                variant="outlined"
-                sx={{
-                    width: 1,
-                    borderRadius: "md"
-                }}
+
+            <ButtonGroup
+                orientation="vertical"
+                sx={{ '--ButtonGroup-radius': '6px'}}
             >
-                <ListItem>
-                    <Box
-                        sx={{
-                            marginLeft: "0.5em"
-                        }}
-                    >
-                        <Typography level="body-xs" className="purple">username</Typography>
-                        <Typography level="body-md" sx={{ color: "white" }}>{login.username}</Typography>
-                    </Box>
-                </ListItem>
-                <ListDivider/>
-                <ListItem>
-                    <Box
-                        sx={{
-                            marginLeft: "0.5em"
-                        }}
-                    >
-                        <Typography level="body-xs" className="purple">password</Typography>
-                        <Typography level="title-lg" sx={{ letterSpacing: "0.03em" }}>{"\u2022".repeat(10)}</Typography>
-                    </Box>
-                </ListItem>
-            </List>
+                <LoginDetailField
+                    first_in_group={true}
+                    label="username"
+                    value={login.username}
+                    value_sx={{ color: "white" }}
+                />
+
+                <LoginDetailField
+                    last_in_group={true}
+                    variant="password"
+                    label="password"
+                    value={login.password} />
+            </ButtonGroup>
+
+            <LoginDetailField
+                variant="url"
+                label="website"
+                value={login.url}
+                sx={{ marginTop: ".8em" }} />
         </Box>
     )
 }
