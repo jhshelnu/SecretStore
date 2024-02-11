@@ -5,31 +5,35 @@
 }
 
 .bg-color {
-  background-color: var(--background-rgb);
+  background-color: var(--background-rgb) !important;
 }
 
 .bg-color-hoverable {
-  background-color: var(--background-rgb);
+  background-color: var(--background-rgb) !important;
 }
 
 .bg-color-hoverable:hover {
-  background-color: var(--highlight-rgb);
+  background-color: var(--highlight-rgb) !important;
 }
 
 .bg-color-selected {
-  background-color: var(--selected-rgb);
+  background-color: var(--selected-rgb) !important;
+}
+
+.bg-color-selected:hover {
+  background-color: var(--selected-rgb) !important;
 }
 
 body {
-  background-color: var(--background-rgb);
+  background-color: var(--background-rgb) !important;
 }
 
 .purple {
-  color: #bbadff;
+  color: #bbadff !important;
 }
 
 .url-blue {
-  color: #85beff;
+  color: #85beff !important;
 }
 
 /* Disables the default eye icon in password fields on MS Edge Chromium */
