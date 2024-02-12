@@ -19,6 +19,10 @@ export default function FromExisting() {
             multiple: false,
             directory: false,
             defaultPath: await desktopDir(),
+            filters: [{
+                name: "SecretStore files",
+                extensions: ["secretstore"]
+            }]
         }) as string
 
         if (selectedFilePath) {
