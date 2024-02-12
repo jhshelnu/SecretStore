@@ -1,6 +1,6 @@
-import {Box, Card, CardContent, List, Typography} from "@mui/joy";
+import { Box, Card, CardContent, List, Typography } from "@mui/joy";
 import Login from "@/types/Login";
-import {Dispatch, SetStateAction} from "react";
+import { Dispatch, SetStateAction } from "react";
 
 type Props = {
     logins: Login[],
@@ -30,8 +30,8 @@ export default function LoginsList({ logins, selectedLogin, setSelectedLogin }: 
                             loading="lazy"
                             alt=""
                             sx={{
-                                width: '2.5em',
-                                height: '2.5em'
+                                width: "2.5em",
+                                height: "2.5em"
                             }}
                         />
                         <CardContent orientation="vertical">
@@ -42,8 +42,8 @@ export default function LoginsList({ logins, selectedLogin, setSelectedLogin }: 
                 )}
             </List>
             <Typography level="body-sm" alignSelf="center">
-                {logins.length} {logins.length === 1 ? 'item' : 'items'}
+                {logins.length} {logins.length === 1 ? "item" : "items"}
             </Typography>
         </Box>
-    )
+    );
 }

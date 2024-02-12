@@ -1,5 +1,5 @@
-import {Box, Button, ListItem, Typography, TypographySystem} from "@mui/joy";
-import {SxProps} from "@mui/joy/styles/types";
+import { Box, Button, Typography, TypographySystem } from "@mui/joy";
+import { SxProps } from "@mui/joy/styles/types";
 import toast from "react-hot-toast";
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 
 export default function LoginDetailField(props: Props) {
     let default_value_sx = props.variant === "password" ? { letterSpacing: "0.03em" } : {};
-    let value_typography_level = props.variant === "password" ? "title-lg" : "body-md";
+    let value_typography_level: keyof TypographySystem = props.variant === "password" ? "title-lg" : "body-md";
 
     let parsedURL = props.variant === "url" ? new URL(props.value) : null;
     let protocol = parsedURL?.protocol;
@@ -30,7 +30,7 @@ export default function LoginDetailField(props: Props) {
     return (
         <Button
             className="bg-color-hoverable"
-            sx={{...props.sx, display: "flex", justifyContent: "flex-start", width: "inherit" }}
+            sx={{ ...props.sx, display: "flex", justifyContent: "flex-start", width: "inherit" }}
             data-first-child={props.first_in_group}
             data-last-child={props.last_in_group}
             onClick={async () => {
@@ -47,16 +47,15 @@ export default function LoginDetailField(props: Props) {
                     {props.label}
                 </Typography>
                 <Typography
-                    // @ts-ignore
                     level={value_typography_level}
                     color={props.variant === "url" ? "neutral" : undefined }
                     sx={{ ...default_value_sx, ...props.value_sx, fontSize: "15px", fontWeight: "400" }}
                 >
                     {props.variant === "password" && "\u2022".repeat(10)}
-                    {props.variant === "url" && <>{protocol}//<span className="url-blue">{host}</span>{pathname}</>}
+                    {props.variant === "url" && <>{protocol + "//"}<span className="url-blue">{host}</span>{pathname}</>}
                     {!props.variant && props.value}
                 </Typography>
             </Box>
         </Button>
-    )
+    );
 }

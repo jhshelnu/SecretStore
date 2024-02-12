@@ -1,4 +1,4 @@
-import {Box, Button, ButtonGroup, Card, List, ListDivider, ListItem, ListItemButton, Typography} from "@mui/joy";
+import { Box, ButtonGroup, Card, Typography } from "@mui/joy";
 import Login from "@/types/Login";
 import LoginDetailField from "@/components/LoginDetailField";
 
@@ -25,8 +25,8 @@ export default function LoginDetail({ login }: Props) {
                     loading="lazy"
                     alt=""
                     sx={{
-                        width: '3.8em',
-                        height: '3.8em'
+                        width: "3.8em",
+                        height: "3.8em"
                     }}
                 />
                 <Typography level="h3" alignSelf="center">{login.name}</Typography>
@@ -34,7 +34,7 @@ export default function LoginDetail({ login }: Props) {
 
             <ButtonGroup
                 orientation="vertical"
-                sx={{ '--ButtonGroup-radius': '6px'}}
+                sx={{ "--ButtonGroup-radius": "6px" }}
             >
                 <LoginDetailField
                     first_in_group={true}
@@ -56,5 +56,5 @@ export default function LoginDetail({ login }: Props) {
                 value={login.url}
                 sx={{ marginTop: ".8em" }} />
         </Box>
-    )
+    );
 }

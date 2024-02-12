@@ -1,8 +1,7 @@
-'use client'
+"use client";
 
-import {Box, Button, ButtonGroup, Typography} from "@mui/joy"
-import {useRouter} from "next/navigation";
-import {useState} from "react";
+import { Box, Button, ButtonGroup, Typography } from "@mui/joy";
+import { useState } from "react";
 import FromExisting from "@/app/file-loader/forms/FromExisting";
 import CreateNew from "@/app/file-loader/forms/CreateNew";
 
@@ -19,7 +18,7 @@ export default function FileLoader() {
 
             <ButtonGroup
                 orientation="horizontal"
-                sx={{ '--ButtonGroup-radius': '25px'}}
+                sx={{ "--ButtonGroup-radius": "25px" }}
             >
                 <Button
                     className={selectedFileLoadType == FileLoadType.NEW ? "bg-color-selected" : "bg-color-hoverable"}
@@ -38,5 +37,5 @@ export default function FileLoader() {
             {selectedFileLoadType == FileLoadType.NEW && <CreateNew />}
             {selectedFileLoadType == FileLoadType.EXISTING && <FromExisting />}
         </Box>
-    )
+    );
 }

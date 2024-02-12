@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import {useState} from "react"
-import {Box, Button, Input, SvgIcon, Typography} from "@mui/joy";
-import {open} from "@tauri-apps/api/dialog";
-import {desktopDir} from "@tauri-apps/api/path";
-import {invoke} from "@tauri-apps/api";
-import {useRouter} from "next/navigation";
+import { useState } from "react";
+import { Button, Input, SvgIcon } from "@mui/joy";
+import { open } from "@tauri-apps/api/dialog";
+import { desktopDir } from "@tauri-apps/api/path";
+import { invoke } from "@tauri-apps/api";
+import { useRouter } from "next/navigation";
 
 export default function FromExisting() {
     let router = useRouter();
 
-    let [filePath, setFilePath] = useState('')
-    let [password, setPassword] = useState('')
-    let [error, setError] = useState(false)
+    let [filePath, setFilePath] = useState("");
+    let [password, setPassword] = useState("");
+    let [error, setError] = useState(false);
 
     async function getFilePathFromFileDialog() {
         let selectedFilePath = await open({
@@ -23,10 +23,10 @@ export default function FromExisting() {
                 name: "SecretStore files",
                 extensions: ["secretstore"]
             }]
-        }) as string
+        }) as string;
 
         if (selectedFilePath) {
-            setFilePath(selectedFilePath)
+            setFilePath(selectedFilePath);
         }
     }
 
@@ -38,8 +38,8 @@ export default function FromExisting() {
             })
             .then(() => router.replace("/logins"))
             .catch(e => {
-                setPassword('')
-                setError(e)
+                setPassword("");
+                setError(e);
             });
         }
     }
@@ -81,7 +81,7 @@ export default function FromExisting() {
                     width: "18em"
                 }}
                 value={password}
-                onInput={({target}) => setPassword((target as HTMLInputElement).value)}
+                onInput={({ target }) => setPassword((target as HTMLInputElement).value)}
             />
             <Button onClick={loadSecretStore} disabled={!filePath || !password}>Submit</Button>
         </>
