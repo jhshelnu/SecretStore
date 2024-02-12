@@ -1,5 +1,6 @@
 import {Box, Button, ListItem, Typography, TypographySystem} from "@mui/joy";
 import {SxProps} from "@mui/joy/styles/types";
+import toast from "react-hot-toast";
 
 type Props = {
     label: string,
@@ -32,6 +33,10 @@ export default function LoginDetailField(props: Props) {
             sx={{...props.sx, display: "flex", justifyContent: "flex-start", width: "inherit" }}
             data-first-child={props.first_in_group}
             data-last-child={props.last_in_group}
+            onClick={async () => {
+                await navigator.clipboard.writeText(props.value);
+                toast("Copied to clipboard", { id: "clipboard", duration: 2000 });
+            }}
         >
             <Box>
                 <Typography
