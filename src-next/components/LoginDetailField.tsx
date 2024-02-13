@@ -1,6 +1,8 @@
 import { Box, Button, Typography, TypographySystem } from "@mui/joy";
 import { SxProps } from "@mui/joy/styles/types";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import { open } from "@tauri-apps/api/shell";
 
 type Props = {
     label: string,
@@ -13,6 +15,8 @@ type Props = {
 }
 
 export default function LoginDetailField(props: Props) {
+    let [hovering, setHovering] = useState(false);
+
     let default_value_sx = props.variant === "password" ? { letterSpacing: "0.03em" } : {};
     let value_typography_level: keyof TypographySystem = props.variant === "password" ? "title-lg" : "body-md";
 
@@ -27,16 +31,25 @@ export default function LoginDetailField(props: Props) {
         pathname = "";
     }
 
+    async function copyValue() {
+        await navigator.clipboard.writeText(props.value);
+        toast("Copied to clipboard", { id: "clipboard", duration: 2000 });
+    }
+
+    async function openURL() {
+        await open(props.value);
+    }
+
     return (
         <Button
             className="bg-color-hoverable"
-            sx={{ ...props.sx, display: "flex", justifyContent: "flex-start", width: "inherit" }}
+            sx={{ ...props.sx, display: "flex", justifyContent: "space-between", width: "inherit" }}
             data-first-child={props.first_in_group}
             data-last-child={props.last_in_group}
-            onClick={async () => {
-                await navigator.clipboard.writeText(props.value);
-                toast("Copied to clipboard", { id: "clipboard", duration: 2000 });
-            }}
+            onClick={props.variant === "url" ? openURL : copyValue}
+            onMouseEnter={() => setHovering(true)}
+            onMouseLeave={() => setHovering(false)}
+            endDecorator={hovering && <Typography level="title-md">{props.variant === "url" ? "Open" : "Copy"}</Typography>}
         >
             <Box>
                 <Typography
