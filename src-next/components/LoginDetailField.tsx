@@ -3,6 +3,7 @@ import { SxProps } from "@mui/joy/styles/types";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { open } from "@tauri-apps/api/shell";
+import { readText, writeText } from "@tauri-apps/api/clipboard";
 
 type Props = {
     label: string,
@@ -32,8 +33,14 @@ export default function LoginDetailField(props: Props) {
     }
 
     async function copyValue() {
-        await navigator.clipboard.writeText(props.value);
-        toast("Copied to clipboard", { id: "clipboard", duration: 2000 });
+        await writeText(props.value);
+        toast("Copied to clipboard", { id: "clipboard", duration: 2_000 });
+        // after 90 seconds, clear the clipboard (unless the user has since copied something else)
+        setTimeout(async () => {
+            if (await readText() === props.value) {
+                await writeText("");
+            }
+        }, 90_000);
     }
 
     async function openURL() {

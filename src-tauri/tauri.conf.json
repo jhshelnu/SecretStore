@@ -20,6 +20,10 @@
       },
       "shell": {
         "open": true
+      },
+      "clipboard": {
+        "readText": true,
+        "writeText": true
       }
     },
     "bundle": {
