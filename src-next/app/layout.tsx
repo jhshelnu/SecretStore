@@ -2,10 +2,11 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
-import React from "react";
+import React, { useState } from "react";
 import { CssVarsProvider } from "@mui/joy";
 import { Toaster } from "react-hot-toast";
 import TitleBar from "@/components/TitleBar";
+import LockStateContext from "@/components/LockStateContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,6 +15,8 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    const [isUnlocked, setUnlocked] = useState(false);
+
     return (
         <html lang="en">
             <head>
@@ -33,9 +36,11 @@ export default function RootLayout({
                     boxSizing: "border-box",
                 }}
             >
-                <TitleBar />
-                <Toaster position="bottom-center"/>
-                <CssVarsProvider defaultMode="dark">{children}</CssVarsProvider>
+                <LockStateContext.Provider value={{ isUnlocked, setUnlocked }}>
+                    <TitleBar />
+                    <CssVarsProvider defaultMode="dark">{children}</CssVarsProvider>
+                    <Toaster position="bottom-center"/>
+                </LockStateContext.Provider>
             </body>
         </html>
     );

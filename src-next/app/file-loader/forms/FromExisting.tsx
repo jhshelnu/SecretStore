@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Input, SvgIcon } from "@mui/joy";
 import { open } from "@tauri-apps/api/dialog";
 import { desktopDir } from "@tauri-apps/api/path";
 import { invoke } from "@tauri-apps/api";
 import { useRouter } from "next/navigation";
+import LockStateContext from "@/components/LockStateContext";
 
 export default function FromExisting() {
     let router = useRouter();
@@ -13,6 +14,8 @@ export default function FromExisting() {
     let [filePath, setFilePath] = useState("");
     let [password, setPassword] = useState("");
     let [error, setError] = useState(false);
+
+    const { setUnlocked } = useContext(LockStateContext);
 
     async function getFilePathFromFileDialog() {
         let selectedFilePath = await open({
@@ -36,7 +39,10 @@ export default function FromExisting() {
                     filePath,
                     password,
             })
-            .then(() => router.replace("/logins"))
+            .then(async () => {
+                router.replace("/logins");
+                setUnlocked(true);
+            })
             .catch(e => {
                 setPassword("");
                 setError(e);

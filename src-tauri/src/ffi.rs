@@ -25,3 +25,10 @@ pub fn get_secretstore_items(mutex: MutexStore<'_>) -> Vec<Login> {
     let store = mutex.lock().unwrap();
     store.as_ref().unwrap().read().unwrap()
 }
+
+#[tauri::command]
+pub fn close_secretstore(mutex: MutexStore<'_>) {
+    // drop the open connection to the DB
+    let mut store = mutex.lock().unwrap();
+    *store = None;
+}

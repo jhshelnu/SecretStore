@@ -1,11 +1,24 @@
 import { Box, IconButton, Typography } from "@mui/joy";
 import { Close, HorizontalRule, CheckBoxOutlineBlankSharp, Lock } from "@mui/icons-material";
 import { appWindow } from "@tauri-apps/api/window";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import LockStateContext from "@/components/LockStateContext";
+import { useRouter } from "next/navigation";
+import { invoke } from "@tauri-apps/api";
 
 export default function TitleBar() {
+    const router = useRouter();
+
     const [ isMaximized, setMaximized ] = useState(false);
     appWindow.isMaximized().then(setMaximized).catch(console.error);
+
+    const { isUnlocked, setUnlocked } = useContext(LockStateContext);
+
+    async function lockVault() {
+        setUnlocked(false);
+        router.replace("/");
+        await invoke("close_secretstore");
+    }
 
     return (
         <Box
@@ -29,12 +42,15 @@ export default function TitleBar() {
                 SecretStore
             </Typography>
             <Box sx={{ height: 1 }}>
-                <IconButton
-                    className="title-button"
-                    sx={{ height: 1, width: "3em", borderRadius: 0, marginX: "1em" }}
-                >
-                    <Lock/>
-                </IconButton>
+                {isUnlocked &&
+                    <IconButton
+                        className="title-button"
+                        sx={{ height: 1, width: "3em", borderRadius: 0, marginX: "1em" }}
+                        onClick={lockVault}
+                    >
+                        <Lock/>
+                    </IconButton>
+                }
                 <IconButton
                     className="title-button"
                     sx={{ height: 1, width: "3em", borderRadius: 0 }}

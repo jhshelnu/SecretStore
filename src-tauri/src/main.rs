@@ -23,7 +23,8 @@ fn main() {
         .manage(Mutex::new(None::<SecretStore>))
         .invoke_handler(tauri::generate_handler![
             ffi::init_secretstore_from_file,
-            ffi::get_secretstore_items
+            ffi::get_secretstore_items,
+            ffi::close_secretstore,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
