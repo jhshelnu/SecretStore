@@ -13,9 +13,7 @@ export default function FileLoader() {
     const [selectedFileLoadType, setSelectedFileLoadType] = useState<FileLoadType | null>(null);
 
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" gap="1em">
-            <Typography level="title-lg" fontSize="50px">SecretStore</Typography>
-
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap="1em" paddingTop="4em">
             <ButtonGroup
                 orientation="horizontal"
                 sx={{ "--ButtonGroup-radius": "25px" }}

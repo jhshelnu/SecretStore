@@ -1,7 +1,9 @@
 :root {
   --background-rgb: #262626;
+  --title-button-highlight-rgb: #404040;
   --highlight-rgb: #1d3a5a;
   --selected-rgb: #0570eb;
+  --title-button-close-highlight-rgb: #f4522a;
 }
 
 .bg-color {
@@ -14,6 +16,22 @@
 
 .bg-color-hoverable:hover {
   background-color: var(--highlight-rgb) !important;
+}
+
+.title-button {
+  background-color: var(--background-rgb) !important;
+}
+
+.title-button:hover {
+  background-color: var(--title-button-highlight-rgb) !important;
+}
+
+.title-button-close {
+  background-color: var(--background-rgb) !important;
+}
+
+.title-button-close:hover {
+  background-color: var(--title-button-close-highlight-rgb) !important;
 }
 
 .bg-color-selected {
