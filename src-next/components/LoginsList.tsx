@@ -10,7 +10,7 @@ type Props = {
 
 export default function LoginsList({ logins, selectedLogin, setSelectedLogin }: Props) {
     return (
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" marginTop=".3em" marginX=".75em" >
             <List>
                 {logins.map(login =>
                     <Card

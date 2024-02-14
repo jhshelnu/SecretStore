@@ -10,6 +10,7 @@ export default function LoginDetail({ login }: Props) {
     return (
         <Box
             paddingX="1em"
+            paddingTop=".5em"
             sx={{
                 width: 1
             }}

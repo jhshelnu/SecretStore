@@ -13,7 +13,6 @@ export default function TitleBar() {
             sx={{
                 marginTop: 0,
                 marginX: 0,
-                width: 1,
                 height: "3.45em",
                 display: "flex",
                 justifyContent: "space-between",
@@ -21,7 +20,14 @@ export default function TitleBar() {
                 borderBottom: ".1em solid black",
             }}
         >
-            <Typography level="h4" marginLeft="1em">SecretStore</Typography>
+            <Typography
+                level="h4"
+                marginLeft="1em"
+                data-tauri-drag-region="true"
+                sx={{ userSelect: "none" }}
+            >
+                SecretStore
+            </Typography>
             <Box sx={{ height: 1 }}>
                 <IconButton
                     className="title-button"
