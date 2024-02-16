@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, Typography } from "@mui/joy";
-import {Close, HorizontalRule, CheckBoxOutlineBlankSharp, Lock, Add} from "@mui/icons-material";
+import { Close, HorizontalRule, CheckBoxOutlineBlankSharp, Lock, Add } from "@mui/icons-material";
 import { appWindow } from "@tauri-apps/api/window";
 import { useContext } from "react";
 import LockStateContext from "@/components/LockStateContext";
@@ -38,7 +38,10 @@ export default function TitleBar() {
             >
                 SecretStore
             </Typography>
-            <Box sx={{ display: "flex", alignItems: "flex-end", height: 1 }}>
+            <Box
+                data-tauri-drag-region="true"
+                sx={{ display: "flex", alignItems: "flex-end", height: 1 }}
+            >
                 {isUnlocked &&
                     <IconButton
                         className="hover"
@@ -50,7 +53,8 @@ export default function TitleBar() {
                 }
                 {isUnlocked &&
                     <Button
-                        sx={{ alignSelf: "center", marginRight: "1.5em", minHeight: 0, height: "2.2em", borderRadius: "8px", paddingLeft: ".1em" }}
+                        className="bg-color-selected"
+                        sx={{ alignSelf: "center", marginRight: "1.5em", minHeight: 0, height: "2.2em", borderRadius: "8px", paddingLeft: ".6em" }}
                     >
                         <Typography level="body-md" startDecorator={<Add fontSize="medium" />} marginY="0">New Item</Typography>
                     </Button>

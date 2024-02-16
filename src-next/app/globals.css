@@ -46,6 +46,10 @@
   background-color: var(--selected-rgb) !important;
 }
 
+.bg-color-selected p {
+  color: white !important;
+}
+
 body {
   background-color: var(--background-rgb) !important;
 }
