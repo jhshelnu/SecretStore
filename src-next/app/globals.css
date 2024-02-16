@@ -1,8 +1,10 @@
 :root {
   --background-rgb: #262626;
+  --background-rgb-light: #333333;
   --title-button-highlight-rgb: #404040;
   --highlight-rgb: #1d3a5a;
-  --selected-rgb: #0570eb;
+  --solid-blue-rgb: #0570eb;
+  --solid-blue-hover-rgb: #0565d4;
   --title-button-close-highlight-rgb: #f4522a;
 }
 
@@ -16,6 +18,10 @@
 
 .bg-color-hoverable:hover {
   background-color: var(--highlight-rgb) !important;
+}
+
+.bg-color-light {
+  background-color: var(--background-rgb-light) !important;;
 }
 
 .hover:hover {
@@ -39,11 +45,19 @@
 }
 
 .bg-color-selected {
-  background-color: var(--selected-rgb) !important;
+  background-color: var(--solid-blue-rgb) !important;
+}
+
+.solid-button {
+  background-color: var(--solid-blue-rgb) !important;
+}
+
+.solid-button:hover {
+  background-color: var(--solid-blue-hover-rgb) !important;
 }
 
 .bg-color-selected:hover {
-  background-color: var(--selected-rgb) !important;
+  background-color: var(--solid-blue-rgb) !important;
 }
 
 .bg-color-selected p {
@@ -60,6 +74,10 @@ body {
 
 .url-blue {
   color: #85beff !important;
+}
+
+.Mui-focusVisible {
+  outline: none !important;
 }
 
 /* Disables the default eye icon in password fields on MS Edge Chromium */
