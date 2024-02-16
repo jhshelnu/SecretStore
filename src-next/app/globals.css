@@ -18,6 +18,10 @@
   background-color: var(--highlight-rgb) !important;
 }
 
+.hover:hover {
+  background-color: var(--highlight-rgb) !important;
+}
+
 .title-button {
   background-color: var(--background-rgb) !important;
 }

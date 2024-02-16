@@ -1,16 +1,13 @@
-import { Box, IconButton, Typography } from "@mui/joy";
-import { Close, HorizontalRule, CheckBoxOutlineBlankSharp, Lock } from "@mui/icons-material";
+import { Box, Button, IconButton, Typography } from "@mui/joy";
+import {Close, HorizontalRule, CheckBoxOutlineBlankSharp, Lock, Add} from "@mui/icons-material";
 import { appWindow } from "@tauri-apps/api/window";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import LockStateContext from "@/components/LockStateContext";
 import { useRouter } from "next/navigation";
 import { invoke } from "@tauri-apps/api";
 
 export default function TitleBar() {
     const router = useRouter();
-
-    const [ isMaximized, setMaximized ] = useState(false);
-    appWindow.isMaximized().then(setMaximized).catch(console.error);
 
     const { isUnlocked, setUnlocked } = useContext(LockStateContext);
 
@@ -41,43 +38,45 @@ export default function TitleBar() {
             >
                 SecretStore
             </Typography>
-            <Box sx={{ height: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "flex-end", height: 1 }}>
                 {isUnlocked &&
                     <IconButton
-                        className="title-button"
-                        sx={{ height: 1, width: "3em", borderRadius: 0, marginX: "1em" }}
+                        className="hover"
+                        sx={{ alignSelf: "center", paddingX: ".1em", paddingY: ".5em", width: "2em", borderRadius: "10px", marginX: "1em" }}
                         onClick={lockVault}
                     >
-                        <Lock/>
+                        <Lock fontSize="small" />
                     </IconButton>
+                }
+                {isUnlocked &&
+                    <Button
+                        sx={{ alignSelf: "center", marginRight: "1.5em", minHeight: 0, height: "2.2em", borderRadius: "8px", paddingLeft: ".1em" }}
+                    >
+                        <Typography level="body-md" startDecorator={<Add fontSize="medium" />} marginY="0">New Item</Typography>
+                    </Button>
                 }
                 <IconButton
                     className="title-button"
                     sx={{ height: 1, width: "3em", borderRadius: 0 }}
                     onClick={async () => await appWindow.minimize()}
                 >
-                    <HorizontalRule/>
+                    <HorizontalRule fontSize="small" />
                 </IconButton>
                 <IconButton
                     className="title-button"
                     sx={{ height: 1, width: "3em", borderRadius: 0 }}
                     onClick={async () => {
                         await appWindow.toggleMaximize();
-                        setMaximized(await appWindow.isMaximized());
                     }}
                 >
-                    {isMaximized
-                        ? <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 25 25">
-                            <path fill="currentColor" d="M4 8h4V4h12v12h-4v4H4zm12 0v6h2V6h-8v2zM6 12v6h8v-6z"></path>
-                          </svg>
-                        : <CheckBoxOutlineBlankSharp sx={{ width: ".6em" }}/>}
+                    <CheckBoxOutlineBlankSharp sx={{ width: ".6em" }}/>
                 </IconButton>
                 <IconButton
                     className="title-button-close"
                     sx={{ height: 1, width: "3em", borderRadius: 0 }}
                     onClick={() => appWindow.close()}
                 >
-                    <Close/>
+                    <Close fontSize="small" />
                 </IconButton>
             </Box>
         </Box>
