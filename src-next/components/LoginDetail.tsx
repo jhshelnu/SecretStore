@@ -1,6 +1,7 @@
 import { Box, ButtonGroup, Card, Typography } from "@mui/joy";
 import Login from "@/types/Login";
 import LoginDetailField from "@/components/LoginDetailField";
+import LoginDetailDropdownMenu from "@/components/LoginDetailDropdownMenu";
 
 type Props = {
     login: Login
@@ -15,6 +16,9 @@ export default function LoginDetail({ login }: Props) {
                 width: 1
             }}
         >
+            <Box>
+                <LoginDetailDropdownMenu login={login} sx={{ float: "right" }} />
+            </Box>
             <Card
                 orientation="horizontal"
                 className="bg-color"

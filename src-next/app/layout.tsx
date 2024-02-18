@@ -2,11 +2,12 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CssVarsProvider } from "@mui/joy";
 import { Toaster } from "react-hot-toast";
 import TitleBar from "@/components/TitleBar";
 import LockStateContext from "@/components/LockStateContext";
+import { invoke } from "@tauri-apps/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +17,13 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     const [isUnlocked, setUnlocked] = useState(false);
+
+    // don't think this is strictly necessary for release builds,
+    // but it is very useful in development when a UI refresh occurs
+    useEffect(() => {
+        invoke("is_secretstore_initialized")
+            .then(isInit => setUnlocked(isInit as boolean));
+    }, []);
 
     return (
         <html lang="en">
