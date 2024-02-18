@@ -2,7 +2,6 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Box, Button, IconButton, Input, Modal, ModalDialog, Typography } from "@mui/joy";
 import { Close } from "@mui/icons-material";
 import { invoke } from "@tauri-apps/api";
-import { useRouter } from "next/navigation";
 
 type Props = {
     open: boolean,
@@ -10,8 +9,6 @@ type Props = {
 }
 
 export default function CreateLoginModal({ open, setOpen }: Props) {
-    const router = useRouter();
-
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -19,6 +16,12 @@ export default function CreateLoginModal({ open, setOpen }: Props) {
 
     function setFormField(e: FormEvent, setter: Dispatch<SetStateAction<string>>) {
         setter((e.target as HTMLInputElement).value);
+    }
+
+    async function createLogin(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        await invoke("create_new_login", { name, username, password, url });
+        location.reload();
     }
 
     return (
@@ -49,14 +52,7 @@ export default function CreateLoginModal({ open, setOpen }: Props) {
                       <Close fontSize="medium" />
                   </IconButton>
               </Box>
-              <form
-                  onSubmit={async e => {
-                      e.preventDefault();
-                      await invoke("create_new_login", { name, username, password, url });
-                      setOpen(false);
-                      router.replace("/logins"); // reload the logins page (easier to re-navigate than closing the modal and doing a refresh)
-                  }}
-              >
+              <form onSubmit={createLogin}>
                   <Input placeholder="name" value={name} onInput={e => setFormField(e, setName)} required />
                   <Input placeholder="username" value={username} onInput={e => setFormField(e, setUsername)} required />
                   <Input placeholder="password" value={password} onInput={e => setFormField(e, setPassword)} required />

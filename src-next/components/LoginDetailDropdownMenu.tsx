@@ -1,5 +1,3 @@
-"use client";
-
 import Login from "@/types/Login";
 import Dropdown from "@mui/joy/Dropdown";
 import IconButton from "@mui/joy/IconButton";
@@ -9,7 +7,6 @@ import MenuItem from "@mui/joy/MenuItem";
 import MoreVert from "@mui/icons-material/MoreVert";
 import { SxProps } from "@mui/joy/styles/types";
 import { invoke } from "@tauri-apps/api";
-import { useRouter } from "next/navigation";
 
 type Props = {
     login: Login
@@ -17,11 +14,9 @@ type Props = {
 }
 
 export default function LoginDetailDropdownMenu({ login, sx }: Props) {
-    const router = useRouter();
-
     async function deleteLogin() {
         await invoke("delete_login", { id: login.id });
-        router.refresh();
+        location.reload();
     }
 
     return (

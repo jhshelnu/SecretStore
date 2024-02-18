@@ -1,5 +1,3 @@
-"use client";
-
 import { useContext, useState } from "react";
 import { Button, Input, SvgIcon } from "@mui/joy";
 import { open } from "@tauri-apps/api/dialog";
