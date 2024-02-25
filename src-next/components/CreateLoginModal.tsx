@@ -1,5 +1,5 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
-import { Box, Button, IconButton, Input, Modal, ModalDialog, Typography } from "@mui/joy";
+import { Box, Button, IconButton, Input, Modal, ModalDialog, Stack, Typography } from "@mui/joy";
 import { Close } from "@mui/icons-material";
 import { invoke } from "@tauri-apps/api";
 
@@ -18,8 +18,7 @@ export default function CreateLoginModal({ open, setOpen }: Props) {
         setter((e.target as HTMLInputElement).value);
     }
 
-    async function createLogin(e: FormEvent<HTMLFormElement>) {
-        e.preventDefault();
+    async function createLogin() {
         await invoke("create_new_login", { name, username, password, url });
         location.reload();
     }
@@ -52,13 +51,48 @@ export default function CreateLoginModal({ open, setOpen }: Props) {
                       <Close fontSize="medium" />
                   </IconButton>
               </Box>
-              <form onSubmit={createLogin}>
-                  <Input placeholder="name" value={name} onInput={e => setFormField(e, setName)} required />
+              <Stack
+                  component="form"
+                  sx={{ marginX: "2em", marginTop: "1em" }}
+                  spacing={2}
+              >
+                  <Stack
+                      direction="row"
+                      alignContent="center"
+                      spacing={4}
+                  >
+                      <Box
+                          component="img"
+                          width="3em"
+                          height="3em"
+                          src={url ? url + "/favicon.ico" : ""}
+                      />
+                      <Input placeholder="name" value={name} onInput={e => setFormField(e, setName)} required />
+                  </Stack>
                   <Input placeholder="username" value={username} onInput={e => setFormField(e, setUsername)} required />
                   <Input placeholder="password" value={password} onInput={e => setFormField(e, setPassword)} required />
                   <Input placeholder="website" value={url} onInput={e => setFormField(e, setURL)} required />
-                  <Button type="submit" disabled={!name || !username || !password || !url}>Create</Button>
-              </form>
+              </Stack>
+              <Box
+                  position="absolute"
+                  className="bg-color"
+                  sx={{
+                      height: "5em",
+                      width: "inherit",
+                      bottom: 0,
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                  }}
+              >
+                  <Button
+                      disabled={!name || !username || !password || !url}
+                      sx={{ marginRight: "1.5em", borderRadius: "12px" }}
+                      onClick={createLogin}
+                  >
+                      Save
+                  </Button>
+              </Box>
           </ModalDialog>
         </Modal>
     );
