@@ -63,10 +63,10 @@ export default function LoginDetailField(props: Props) {
             case "url": {
                 return parsedURL
                     ? <>{protocol + "//"}<span className="url-blue">{host}</span>{pathname}</>
-                    : <>{props.value}</>
+                    : <>{props.value}</>;
             }
             default: {
-                return props.value
+                return props.value;
             }
         }
     }
