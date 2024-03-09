@@ -21,7 +21,7 @@ export default function LoginDetailField(props: Props) {
     let default_value_sx = props.variant === "password" ? { letterSpacing: "0.03em" } : {};
     let value_typography_level: keyof TypographySystem = props.variant === "password" ? "title-lg" : "body-md";
 
-    let parsedURL = props.variant === "url" ? new URL(props.value) : null;
+    let parsedURL = props.variant === "url" ? tryParseUrl(props.value) : null;
     let protocol = parsedURL?.protocol;
     let host = parsedURL?.host;
 
@@ -30,6 +30,14 @@ export default function LoginDetailField(props: Props) {
     let pathname= parsedURL?.pathname;
     if (pathname === "/" && !props.value.endsWith("/")) {
         pathname = "";
+    }
+
+    function tryParseUrl(url: string) {
+        try {
+            return new URL(url);
+        } catch (_) {
+            return null;
+        }
     }
 
     async function copyValue() {
@@ -45,6 +53,22 @@ export default function LoginDetailField(props: Props) {
 
     async function openURL() {
         await open(props.value);
+    }
+
+    function getDisplayText() {
+        switch (props.variant) {
+            case "password": {
+                return "\u2022".repeat(10);
+            }
+            case "url": {
+                return parsedURL
+                    ? <>{protocol + "//"}<span className="url-blue">{host}</span>{pathname}</>
+                    : <>{props.value}</>
+            }
+            default: {
+                return props.value
+            }
+        }
     }
 
     return (
@@ -71,9 +95,7 @@ export default function LoginDetailField(props: Props) {
                     color={props.variant === "url" ? "neutral" : undefined }
                     sx={{ ...default_value_sx, ...props.value_sx, fontSize: "15px", fontWeight: "400" }}
                 >
-                    {props.variant === "password" && "\u2022".repeat(10)}
-                    {props.variant === "url" && <>{protocol + "//"}<span className="url-blue">{host}</span>{pathname}</>}
-                    {!props.variant && props.value}
+                    {getDisplayText()}
                 </Typography>
             </Box>
         </Button>

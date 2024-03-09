@@ -9,7 +9,7 @@ pub struct SecretStore {
 }
 
 impl SecretStore {
-    pub fn new(password: String, file_path: String) -> Result<Self> {
+    pub fn new(file_path: &str, password: &str) -> Result<Self> {
         if Path::new(&file_path).is_file() {
             return Err(anyhow!("A file already exists at the specified file path. Try renaming the existing file or rerunning without '--create'"));
         }

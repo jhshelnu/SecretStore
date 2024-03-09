@@ -1,3 +1,4 @@
+use anyhow::Result;
 use std::sync::Mutex;
 use crate::login::Login;
 use crate::secret_store::SecretStore;
@@ -14,14 +15,21 @@ pub fn init_secretstore_from_file(
     file_path: &str,
     password: &str,
     mutex: MutexStore<'_>
-) -> Result<(), String> {
-    let x = SecretStore::from_file(file_path, password)
+) -> Result<(), ()> {
+    SecretStore::from_file(file_path, password)
         .map(|store| *mutex.lock().unwrap() = Some(store))
-        .map_err(|e| {
-            println!("{e}"); // todo: probably dont want to log in release builds, look into rust logging crate
-            "Error loading SecretStore. Verify the given file and password are correct".into()
-        });
-    return x;
+        .map_err(|_| ())
+}
+
+#[tauri::command]
+pub fn create_secretstore(
+    file_path: &str,
+    password: &str,
+    mutex: MutexStore<'_>
+) -> Result<(), ()> {
+    SecretStore::new(file_path, password)
+        .map(|store| *mutex.lock().unwrap() = Some(store))
+        .map_err(|_| ())
 }
 
 #[tauri::command]

@@ -41,9 +41,9 @@ export default function FromExisting() {
                 router.replace("/logins");
                 setUnlocked(true);
             })
-            .catch(e => {
+            .catch(() => {
                 setPassword("");
-                setError(e);
+                setError(true);
             });
         }
     }
@@ -73,7 +73,7 @@ export default function FromExisting() {
                 onClick={getFilePathFromFileDialog}
                 endDecorator={filePath ? "✅" : ""}
             >
-                Select Secretsfile
+                Select SecretStore
             </Button>
             <Input
                 type="password"

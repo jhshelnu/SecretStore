@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, List, Typography } from "@mui/joy";
 import Login from "@/types/Login";
 import { Dispatch, SetStateAction } from "react";
+import LoginIcon from "@/components/LoginIcon";
 
 type Props = {
     logins: Login[],
@@ -24,15 +25,11 @@ export default function LoginsList({ logins, selectedLogin, setSelectedLogin }: 
                         }}
                         onClick={() => setSelectedLogin(login)}
                     >
-                        <Box
-                            component="img"
-                            src={`${login.url}/favicon.ico`}
+                        <LoginIcon
+                            url={login.url}
                             loading="lazy"
-                            alt=""
-                            sx={{
-                                width: "2.5em",
-                                height: "2.5em"
-                            }}
+                            width="2.5em"
+                            height="2.5em"
                         />
                         <CardContent orientation="vertical">
                             <Typography level="title-md">{login.name}</Typography>

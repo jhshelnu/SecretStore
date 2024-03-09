@@ -2,7 +2,7 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Box, Button, IconButton, Input, Modal, ModalDialog, Stack, Typography } from "@mui/joy";
 import { Close } from "@mui/icons-material";
 import { invoke } from "@tauri-apps/api";
-
+import LoginIcon from "@/components/LoginIcon";
 type Props = {
     open: boolean,
     setOpen: Dispatch<SetStateAction<boolean>>
@@ -61,12 +61,7 @@ export default function CreateLoginModal({ open, setOpen }: Props) {
                       alignContent="center"
                       spacing={4}
                   >
-                      <Box
-                          component="img"
-                          width="3em"
-                          height="3em"
-                          src={url ? url + "/favicon.ico" : ""}
-                      />
+                      <LoginIcon url={url} />
                       <Input placeholder="name" value={name} onInput={e => setFormField(e, setName)} required />
                   </Stack>
                   <Input placeholder="username" value={username} onInput={e => setFormField(e, setUsername)} required />

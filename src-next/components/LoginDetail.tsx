@@ -2,6 +2,7 @@ import { Box, ButtonGroup, Card, Typography } from "@mui/joy";
 import Login from "@/types/Login";
 import LoginDetailField from "@/components/LoginDetailField";
 import LoginDetailDropdownMenu from "@/components/LoginDetailDropdownMenu";
+import LoginIcon from "@/components/LoginIcon";
 
 type Props = {
     login: Login
@@ -24,15 +25,10 @@ export default function LoginDetail({ login }: Props) {
                 className="bg-color"
                 variant="soft"
             >
-                <Box
-                    component="img"
-                    src={`${login.url}/favicon.ico`}
-                    loading="lazy"
-                    alt=""
-                    sx={{
-                        width: "3.8em",
-                        height: "3.8em"
-                    }}
+                <LoginIcon
+                    url={login.url}
+                    width="3.8em"
+                    height="3.8em"
                 />
                 <Typography level="h3" alignSelf="center">{login.name}</Typography>
             </Card>
