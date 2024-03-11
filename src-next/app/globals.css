@@ -20,6 +20,10 @@
   background-color: var(--highlight-rgb) !important;
 }
 
+.solid-hover:hover {
+  background-color: var(--solid-blue-rgb) !important;
+}
+
 .bg-color-light {
   background-color: var(--background-rgb-light) !important;;
 }

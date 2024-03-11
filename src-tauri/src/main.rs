@@ -13,6 +13,7 @@ mod ffi;
  * - add project README file
  * - tests!
  * - suppress logging when in release mode
+ * - close db connection on window close
  */
 
 fn main() {

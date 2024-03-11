@@ -30,8 +30,14 @@ export default function LoginDetailDropdownMenu({ login, sx }: Props) {
             </MenuButton>
             <Menu
                 className="bg-color-light"
+                sx={{
+                    borderRadius: "10px",
+                    paddingX: "6px",
+                    boxShadow: "0px 3px 10px -1px rgb(10, 10, 10)"
+                }}
+                placement="bottom-end"
             >
-                <MenuItem onClick={deleteLogin}>Delete</MenuItem>
+                <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={deleteLogin}>Delete</MenuItem>
             </Menu>
         </Dropdown>
     );
