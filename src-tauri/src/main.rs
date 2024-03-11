@@ -14,6 +14,10 @@ mod ffi;
  * - tests!
  * - suppress logging when in release mode
  * - close db connection on window close
+ * - mui theming
+ * - lbase-like changesets, mark run changesets
+ * - favoriting items
+ * - archiving items
  */
 
 fn main() {
