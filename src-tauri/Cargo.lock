@@ -2441,6 +2441,7 @@ name = "secret_store"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "lazy_static",
  "rusqlite",
  "serde",
  "serde_json",

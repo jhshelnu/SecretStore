@@ -1,6 +1,6 @@
 use anyhow::Result;
 use std::sync::Mutex;
-use crate::login::Login;
+use crate::entity::login::Login;
 use crate::secret_store::SecretStore;
 
 type MutexStore<'state> = tauri::State<'state, Mutex<Option<SecretStore>>>;
@@ -33,7 +33,7 @@ pub fn create_secretstore(
 }
 
 #[tauri::command]
-pub fn get_secretstore_items(mutex: MutexStore<'_>) -> Vec<Login> {
+pub fn get_logins(mutex: MutexStore<'_>) -> Vec<Login> {
     // todo: handle errors better - make this return a Result<Vec<Login>, ()> and if Err(()) is returned, have UI redirect to home screen and show generic error
     let store = mutex.lock().unwrap();
     store.as_ref().unwrap().read().unwrap()
@@ -49,6 +49,12 @@ pub fn create_new_login(mutex: MutexStore<'_>, name: String, username: String, p
 pub fn delete_login(mutex: MutexStore<'_>, id: u32) {
     let mut store = mutex.lock().unwrap();
     store.as_mut().unwrap().delete(&id).unwrap();
+}
+
+#[tauri::command]
+pub fn update_login(mutex: MutexStore<'_>, login: Login) {
+    let mut store = mutex.lock().unwrap();
+    store.as_mut().unwrap().update(&login).unwrap();
 }
 
 #[tauri::command]

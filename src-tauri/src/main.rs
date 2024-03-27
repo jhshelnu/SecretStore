@@ -4,9 +4,10 @@
 use std::sync::Mutex;
 use crate::secret_store::SecretStore;
 
-mod login;
 mod secret_store;
 mod ffi;
+mod changesets;
+mod entity;
 
 /* TODO
  * - use SecureString class that zeroes itself out on drop (zeroize crate + an npm package)
@@ -15,7 +16,7 @@ mod ffi;
  * - suppress logging when in release mode
  * - close db connection on window close
  * - mui theming
- * - lbase-like changesets, mark run changesets
+ * - lbase-like CHANGESETS, mark run CHANGESETS
  * - favoriting items
  * - archiving items
  */
@@ -27,9 +28,10 @@ fn main() {
             ffi::is_secretstore_initialized,
             ffi::init_secretstore_from_file,
             ffi::create_secretstore,
-            ffi::get_secretstore_items,
+            ffi::get_logins,
             ffi::create_new_login,
             ffi::delete_login,
+            ffi::update_login,
             ffi::close_secretstore,
         ])
         .run(tauri::generate_context!())

@@ -5,10 +5,11 @@ import LoginDetailDropdownMenu from "@/components/LoginDetailDropdownMenu";
 import LoginIcon from "@/components/LoginIcon";
 
 type Props = {
-    login: Login
+    login: Login,
+    updateLogin: (login: Login) => void
 }
 
-export default function LoginDetail({ login }: Props) {
+export default function LoginDetail({ login, updateLogin }: Props) {
     return (
         <Box
             paddingX="1em"
@@ -18,7 +19,7 @@ export default function LoginDetail({ login }: Props) {
             }}
         >
             <Box>
-                <LoginDetailDropdownMenu login={login} sx={{ float: "right" }} />
+                <LoginDetailDropdownMenu login={login} updateLogin={updateLogin} sx={{ float: "right" }} />
             </Box>
             <Card
                 orientation="horizontal"
@@ -29,6 +30,7 @@ export default function LoginDetail({ login }: Props) {
                     url={login.url}
                     width="3.8em"
                     height="3.8em"
+                    favorite={login.favorite}
                 />
                 <Typography level="h3" alignSelf="center">{login.name}</Typography>
             </Card>

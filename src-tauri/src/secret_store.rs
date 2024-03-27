@@ -1,7 +1,9 @@
+use std::collections::HashSet;
 use std::path::Path;
 use anyhow::{anyhow, Result};
 use rusqlite::{Connection, DatabaseName, OpenFlags, params};
-use crate::login::Login;
+use crate::changesets::CHANGESETS;
+use crate::entity::login::Login;
 
 #[derive(Debug)]
 pub struct SecretStore {
@@ -17,6 +19,7 @@ impl SecretStore {
         let mut conn = Connection::open_with_flags(file_path, OpenFlags::default())?;
         conn.pragma_update(Some(DatabaseName::Main), "key", password)?;
         Self::init_db_schema(&mut conn)?;
+        Self::update_db_schema(&mut conn)?;
         Ok(Self { conn })
     }
 
@@ -25,20 +28,36 @@ impl SecretStore {
             return Err(anyhow!("No SecretStore file found at the specified file path. Try a different file path or rerunning with '--create'"));
         }
 
-        let conn = Connection::open_with_flags(file_path, OpenFlags::default() & !OpenFlags::SQLITE_OPEN_CREATE)?;
+        let mut conn = Connection::open_with_flags(file_path, OpenFlags::default() & !OpenFlags::SQLITE_OPEN_CREATE)?;
         conn.pragma_update(Some(DatabaseName::Main), "key", password)?;
         let _ = conn.prepare("select 1 from login limit 1")?.query([])?; // will throw if the file + password combination is wrong
+        Self::update_db_schema(&mut conn)?;
         Ok(Self { conn })
     }
 
     fn init_db_schema(conn: &mut Connection) -> Result<()> {
-        conn.execute("create table login (
-            id integer primary key,
-            name text not null,
-            username text not null,
-            password text not null,
-            url text not null
+        conn.execute("create table changelog (
+            id integer primary key
         )", ())?;
+        Ok(())
+    }
+
+    fn update_db_schema(conn: &mut Connection) -> Result<()> {
+        let mut stmt = conn.prepare("select id from changelog")?;
+
+        let ids_executed: HashSet<u32> = stmt
+            .query_map([], |row| row.get(0))?
+            .map(|id| id.unwrap())
+            .collect();
+
+        drop(stmt);
+
+        for changeset in CHANGESETS.iter().filter(|changeset| !ids_executed.contains(&changeset.id)) {
+            let tx = conn.transaction()?;
+            tx.execute(&changeset.sql, ())?;
+            tx.execute("insert into changelog (id) values (:id)", &[(":id", &changeset.id)])?;
+            tx.commit()?;
+        }
 
         Ok(())
     }
@@ -55,7 +74,7 @@ impl SecretStore {
     }
 
     pub fn read(&self) -> Result<Vec<Login>> {
-        let mut stmt = self.conn.prepare("select id, name, username, password, url from login")?;
+        let mut stmt = self.conn.prepare("select id, name, username, password, url, favorite from login")?;
         let login_results = stmt.query_map([], |row|
             Ok(Login {
                 id:       row.get(0)?,
@@ -63,6 +82,7 @@ impl SecretStore {
                 username: row.get(2)?,
                 password: row.get(3)?,
                 url:      row.get(4)?,
+                favorite: row.get(5)?,
             })
         )?;
 
@@ -74,15 +94,16 @@ impl SecretStore {
         Ok(logins)
     }
 
-    pub fn update(&mut self, id: &u32, name: &String, username: &String, password: &String, url: &String) -> Result<()> {
+    pub fn update(&mut self, login: &Login) -> Result<()> {
         self.conn.execute("
             update login set
                 name = ?2,
                 username = ?3,
                 password = ?4,
-                url = ?5
+                url = ?5,
+                favorite = ?6
             where id = ?1",
-  params![id, name, username, password, url])?;
+  params![login.id, login.name, login.username, login.password, login.url, login.favorite])?;
         Ok(())
     }
 

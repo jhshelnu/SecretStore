@@ -1,11 +1,11 @@
-use std::fmt::Display;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Login {
     pub id: u32,
     pub name: String,
     pub username: String,
     pub password: String,
     pub url: String,
+    pub favorite: bool,
 }

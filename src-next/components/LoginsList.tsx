@@ -6,10 +6,10 @@ import LoginIcon from "@/components/LoginIcon";
 type Props = {
     logins: Login[],
     selectedLogin: Login | null,
-    setSelectedLogin: Dispatch<SetStateAction<Login | null>>,
+    setSelectedLoginId: Dispatch<SetStateAction<number | null>>,
 }
 
-export default function LoginsList({ logins, selectedLogin, setSelectedLogin }: Props) {
+export default function LoginsList({ logins, selectedLogin, setSelectedLoginId }: Props) {
     return (
         <Box display="flex" flexDirection="column" marginTop=".3em" marginX=".75em" >
             <List>
@@ -23,13 +23,14 @@ export default function LoginsList({ logins, selectedLogin, setSelectedLogin }: 
                         sx={{
                             width: "15em"
                         }}
-                        onClick={() => setSelectedLogin(login)}
+                        onClick={() => setSelectedLoginId(login.id)}
                     >
                         <LoginIcon
                             url={login.url}
                             loading="lazy"
                             width="2.5em"
                             height="2.5em"
+                            favorite={login.favorite}
                         />
                         <CardContent orientation="vertical">
                             <Typography level="title-md">{login.name}</Typography>

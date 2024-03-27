@@ -7,13 +7,24 @@ import MenuItem from "@mui/joy/MenuItem";
 import MoreVert from "@mui/icons-material/MoreVert";
 import { SxProps } from "@mui/joy/styles/types";
 import { invoke } from "@tauri-apps/api";
+import toast from "react-hot-toast";
 
 type Props = {
-    login: Login
+    login: Login,
+    updateLogin: (login: Login) => void,
     sx?: SxProps,
 }
 
-export default function LoginDetailDropdownMenu({ login, sx }: Props) {
+export default function LoginDetailDropdownMenu({ login, updateLogin, sx }: Props) {
+    async function toggleFavorite() {
+        try {
+            // swap the favorite status
+            updateLogin({ ...login, favorite: !login.favorite });
+        } catch (e) {
+            toast.error(`Error ${!login.favorite ? "adding login to favorites" : "removing login from favorites"}`, { id: "favoriteError", duration: 2_000 });
+        }
+    }
+
     async function deleteLogin() {
         await invoke("delete_login", { id: login.id });
         location.reload();
@@ -37,6 +48,7 @@ export default function LoginDetailDropdownMenu({ login, sx }: Props) {
                 }}
                 placement="bottom-end"
             >
+                <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={toggleFavorite}>{login.favorite ? "Remove from Favorites" : "Add to Favorites"}</MenuItem>
                 <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={deleteLogin}>Delete</MenuItem>
             </Menu>
         </Dropdown>
