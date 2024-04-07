@@ -3,6 +3,7 @@ import { Box, Button, IconButton, Input, Modal, ModalDialog, Stack, Typography }
 import { Close } from "@mui/icons-material";
 import { invoke } from "@tauri-apps/api";
 import LoginIcon from "@/components/LoginIcon";
+
 type Props = {
     open: boolean,
     setOpen: Dispatch<SetStateAction<boolean>>

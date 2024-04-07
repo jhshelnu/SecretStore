@@ -34,9 +34,14 @@ pub fn create_secretstore(
 
 #[tauri::command]
 pub fn get_logins(mutex: MutexStore<'_>) -> Vec<Login> {
-    // todo: handle errors better - make this return a Result<Vec<Login>, ()> and if Err(()) is returned, have UI redirect to home screen and show generic error
     let store = mutex.lock().unwrap();
-    store.as_ref().unwrap().read().unwrap()
+    store.as_ref().unwrap().get_all().unwrap()
+}
+
+#[tauri::command]
+pub fn get_favorite_logins(mutex: MutexStore<'_>) -> Vec<Login> {
+    let store = mutex.lock().unwrap();
+    store.as_ref().unwrap().get_favorites().unwrap()
 }
 
 #[tauri::command]

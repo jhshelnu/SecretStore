@@ -38,6 +38,7 @@ export default function RootLayout({
                     margin: 0,
                     width: "100vw",
                     height: "100vh",
+                    overflow: "hidden",
                     borderWidth: "1px 2px 2px 1px",
                     borderStyle: "solid",
                     borderColor: "#404040",

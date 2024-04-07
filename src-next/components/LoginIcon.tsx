@@ -2,7 +2,7 @@ import { Box } from "@mui/joy";
 import { useMemo } from "react";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 
-type props = {
+type Props = {
     url: string,
     width?: string | number,
     height?: string | number,
@@ -10,7 +10,7 @@ type props = {
     favorite?: boolean,
 }
 
-export default function LoginIcon({ url, width, height, loading, favorite }: props) {
+export default function LoginIcon({ url, width, height, loading, favorite }: Props) {
     const faviconUrl = useMemo(() => {
         try {
             const parsedUrl = new URL(url);

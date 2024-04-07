@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::path::Path;
 use anyhow::{anyhow, Result};
-use rusqlite::{Connection, DatabaseName, OpenFlags, params};
+use rusqlite::{Connection, DatabaseName, OpenFlags, params, Statement};
 use crate::changesets::CHANGESETS;
 use crate::entity::login::Login;
 
@@ -73,25 +73,14 @@ impl SecretStore {
         Ok(())
     }
 
-    pub fn read(&self) -> Result<Vec<Login>> {
+    pub fn get_all(&self) -> Result<Vec<Login>> {
         let mut stmt = self.conn.prepare("select id, name, username, password, url, favorite from login")?;
-        let login_results = stmt.query_map([], |row|
-            Ok(Login {
-                id:       row.get(0)?,
-                name:     row.get(1)?,
-                username: row.get(2)?,
-                password: row.get(3)?,
-                url:      row.get(4)?,
-                favorite: row.get(5)?,
-            })
-        )?;
+        Self::get_and_map(&mut stmt)
+    }
 
-        let mut logins = Vec::new();
-        for login_result in login_results {
-            logins.push(login_result?);
-        }
-
-        Ok(logins)
+    pub fn get_favorites(&self) -> Result<Vec<Login>> {
+        let mut stmt = self.conn.prepare("select id, name, username, password, url, favorite from login where favorite")?;
+        Self::get_and_map(&mut stmt)
     }
 
     pub fn update(&mut self, login: &Login) -> Result<()> {
@@ -110,5 +99,25 @@ impl SecretStore {
     pub fn delete(&mut self, id: &u32) -> Result<()> {
         self.conn.execute("delete from login where id = :id", &[(":id", id)])?;
         Ok(())
+    }
+
+    fn get_and_map(stmt: &mut Statement) -> Result<Vec<Login>> {
+        let login_results = stmt.query_map([], |row|
+            Ok(Login {
+                id:       row.get(0)?,
+                name:     row.get(1)?,
+                username: row.get(2)?,
+                password: row.get(3)?,
+                url:      row.get(4)?,
+                favorite: row.get(5)?,
+            })
+        )?;
+
+        let mut logins = Vec::new();
+        for login_result in login_results {
+            logins.push(login_result?);
+        }
+
+        Ok(logins)
     }
 }

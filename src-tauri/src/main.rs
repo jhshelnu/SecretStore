@@ -29,6 +29,7 @@ fn main() {
             ffi::init_secretstore_from_file,
             ffi::create_secretstore,
             ffi::get_logins,
+            ffi::get_favorite_logins,
             ffi::create_new_login,
             ffi::delete_login,
             ffi::update_login,
