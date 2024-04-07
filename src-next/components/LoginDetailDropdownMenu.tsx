@@ -29,12 +29,14 @@ export default function LoginDetailDropdownMenu({ login, updateLogin, sx }: Prop
         try {
             // swap the archived status, this also clears the favorite status
             updateLogin({ ...login, archived: !login.archived, favorite: false });
+            // todo: add success toast message
         } catch (e) {
             toast.error(`Error ${!login.archived ? "archiving login" : "removing login from archive"}`, { id: "favoriteError", duration: 2_000 });
         }
     }
 
     async function deleteLogin() {
+        // todo: consider adding confirmation dialog with success toast
         await invoke("delete_login", { id: login.id });
         location.reload();
     }
