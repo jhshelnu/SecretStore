@@ -74,12 +74,17 @@ impl SecretStore {
     }
 
     pub fn get_all(&self) -> Result<Vec<Login>> {
-        let mut stmt = self.conn.prepare("select id, name, username, password, url, favorite from login")?;
+        let mut stmt = self.conn.prepare("select * from login where not archived")?;
         Self::get_and_map(&mut stmt)
     }
 
     pub fn get_favorites(&self) -> Result<Vec<Login>> {
-        let mut stmt = self.conn.prepare("select id, name, username, password, url, favorite from login where favorite")?;
+        let mut stmt = self.conn.prepare("select * from login where favorite")?;
+        Self::get_and_map(&mut stmt)
+    }
+
+    pub fn get_archived(&self) -> Result<Vec<Login>> {
+        let mut stmt = self.conn.prepare("select * from login where archived")?;
         Self::get_and_map(&mut stmt)
     }
 
@@ -90,9 +95,10 @@ impl SecretStore {
                 username = ?3,
                 password = ?4,
                 url = ?5,
-                favorite = ?6
+                favorite = ?6,
+                archived = ?7
             where id = ?1",
-  params![login.id, login.name, login.username, login.password, login.url, login.favorite])?;
+  params![login.id, login.name, login.username, login.password, login.url, login.favorite, login.archived])?;
         Ok(())
     }
 
@@ -110,6 +116,7 @@ impl SecretStore {
                 password: row.get(3)?,
                 url:      row.get(4)?,
                 favorite: row.get(5)?,
+                archived: row.get(6)?,
             })
         )?;
 

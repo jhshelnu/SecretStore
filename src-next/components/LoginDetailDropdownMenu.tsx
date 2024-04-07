@@ -25,6 +25,15 @@ export default function LoginDetailDropdownMenu({ login, updateLogin, sx }: Prop
         }
     }
 
+    async function toggleArchived() {
+        try {
+            // swap the archived status, this also clears the favorite status
+            updateLogin({ ...login, archived: !login.archived, favorite: false });
+        } catch (e) {
+            toast.error(`Error ${!login.archived ? "archiving login" : "removing login from archive"}`, { id: "favoriteError", duration: 2_000 });
+        }
+    }
+
     async function deleteLogin() {
         await invoke("delete_login", { id: login.id });
         location.reload();
@@ -48,7 +57,12 @@ export default function LoginDetailDropdownMenu({ login, updateLogin, sx }: Prop
                 }}
                 placement="bottom-end"
             >
-                <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={toggleFavorite}>{login.favorite ? "Remove from Favorites" : "Add to Favorites"}</MenuItem>
+                {!login.archived &&
+                    <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={toggleFavorite}>
+                        {login.favorite ? "Remove from Favorites" : "Add to Favorites"}
+                    </MenuItem>
+                }
+                <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={toggleArchived}>{login.archived ? "Remove from Archived" : "Archive"}</MenuItem>
                 <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={deleteLogin}>Delete</MenuItem>
             </Menu>
         </Dropdown>

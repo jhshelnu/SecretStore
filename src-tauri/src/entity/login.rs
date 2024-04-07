@@ -8,4 +8,5 @@ pub struct Login {
     pub password: String,
     pub url: String,
     pub favorite: bool,
+    pub archived: bool,
 }

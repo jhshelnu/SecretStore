@@ -19,11 +19,22 @@ export default function Logins() {
     }, [selectedLoginId, logins]);
 
     useEffect(() => {
-        invoke(filter == LoginFilter.ALL ? "get_logins" : "get_favorite_logins")
+        invoke(getMethodByFilter(filter))
             .then(data => setLogins(data as Login[]))
             .then(() => setSelectedLoginId(null))
             .catch(e => console.error(e));
     }, [filter]);
+
+    function getMethodByFilter(filter: LoginFilter) {
+        switch (filter) {
+            case LoginFilter.ALL:
+                return "get_logins";
+            case LoginFilter.FAVORITES:
+                return "get_favorite_logins";
+            case LoginFilter.ARCHIVED:
+                return "get_archived_logins";
+        }
+    }
 
     async function updateLogin(updatedLogin: Login) {
         const updatedLogins = logins.map(login => login.id === updatedLogin.id ? updatedLogin : login);

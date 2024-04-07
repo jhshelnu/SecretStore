@@ -5,4 +5,5 @@ export default interface Login {
     password: string,
     url: string,
     favorite: boolean,
+    archived: boolean,
 }

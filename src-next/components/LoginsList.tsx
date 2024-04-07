@@ -11,7 +11,8 @@ type Props = {
 
 export default function LoginsList({ logins, selectedLogin, setSelectedLoginId }: Props) {
     return (
-        <Box display="flex" flexDirection="column" marginTop=".3em" marginX=".75em" >
+        <Box display="flex" flexDirection="column" marginTop=".3em" marginX=".75em" justifyContent="start" gap="2" >
+            {/* todo: turn off flex-grow or add item count to this list. currently it is pushed off the page because of flex-grow */}
             <List>
                 {logins.map(login =>
                     <Card
@@ -39,9 +40,11 @@ export default function LoginsList({ logins, selectedLogin, setSelectedLoginId }
                     </Card>
                 )}
             </List>
-            <Typography level="body-sm" alignSelf="center">
-                {logins.length} {logins.length === 1 ? "item" : "items"}
-            </Typography>
+            {logins.length > 0 &&
+                <Typography level="body-sm" alignSelf="center">
+                    {logins.length} {logins.length === 1 ? "item" : "items"}
+                </Typography>
+            }
         </Box>
     );
 }

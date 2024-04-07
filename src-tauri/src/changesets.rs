@@ -20,6 +20,12 @@ lazy_static! {
             sql: String::from("
                 alter table login add column favorite bool not null default false;
             ")
+        },
+        Changeset {
+            id: 3,
+            sql: String::from("
+                alter table login add column archived bool not null default false;
+            ")
         }
     ];
 }
