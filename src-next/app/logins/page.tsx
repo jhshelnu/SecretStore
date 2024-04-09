@@ -37,6 +37,9 @@ export default function Logins() {
     }
 
     async function updateLogin(updatedLogin: Login) {
+        // todo: this method should be updated to handle the case where the updated login no longer fits the current filter
+        //  - new list should not have the login in it: either remove it or simply refetch at least
+        //  - clear currently selected login
         const updatedLogins = logins.map(login => login.id === updatedLogin.id ? updatedLogin : login);
         invoke("update_login", { login: updatedLogin })
             .then(() => setLogins(updatedLogins));

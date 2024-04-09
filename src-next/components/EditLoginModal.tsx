@@ -1,27 +1,33 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Box, Button, IconButton, Input, Modal, ModalDialog, Stack, Typography } from "@mui/joy";
 import { Close } from "@mui/icons-material";
-import { invoke } from "@tauri-apps/api";
 import LoginIcon from "@/components/LoginIcon";
+import Login from "@/types/Login";
 
 type Props = {
     open: boolean,
     setOpen: Dispatch<SetStateAction<boolean>>
+    existingLogin?: Login,
+    onSave: (login: Login) => void
 }
 
-export default function CreateLoginModal({ open, setOpen }: Props) {
-    const [name, setName] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [url, setURL] = useState("");
+export default function EditLoginModal({ open, setOpen, existingLogin, onSave }: Props) {
+    const [name, setName] = useState(existingLogin?.name ?? "");
+    const [username, setUsername] = useState(existingLogin?.username ?? "");
+    const [password, setPassword] = useState(existingLogin?.password ?? "");
+    const [url, setURL] = useState(existingLogin?.url ?? "");
 
     function setFormField(e: FormEvent, setter: Dispatch<SetStateAction<string>>) {
         setter((e.target as HTMLInputElement).value);
     }
 
-    async function createLogin() {
-        await invoke("create_new_login", { name, username, password, url });
-        location.reload();
+    async function handleOnSave() {
+        if (existingLogin) {
+            existingLogin = { ...existingLogin, name, username, password, url };
+            onSave(existingLogin);
+        } else {
+            onSave({ name, username, password, url, favorite: false, archived: false });
+        }
     }
 
     return (
@@ -43,7 +49,7 @@ export default function CreateLoginModal({ open, setOpen }: Props) {
                   className="bg-color"
                   sx={{ height: "5em", display: "flex", flexDirection: "horizontal", justifyContent: "center", alignItems: "center" }}
               >
-                  <Typography level="h3">New Item</Typography>
+                  <Typography level="h3">{existingLogin ? "Update Login" : "New Login"}</Typography>
                   <IconButton
                       className="hover"
                       sx={{ position: "absolute", right: "1.1em", borderRadius: "10px" }}
@@ -84,7 +90,7 @@ export default function CreateLoginModal({ open, setOpen }: Props) {
                   <Button
                       disabled={!name || !username || !password || !url}
                       sx={{ marginRight: "1.5em", borderRadius: "12px" }}
-                      onClick={createLogin}
+                      onClick={handleOnSave}
                   >
                       Save
                   </Button>

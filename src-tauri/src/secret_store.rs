@@ -62,14 +62,12 @@ impl SecretStore {
         Ok(())
     }
 
-    pub fn create(&mut self, name: &str, username: &str, password: &str, url: &str) -> Result<()> {
-        self.conn.execute("insert into login (name, username, password, url)
-            values (:name, :username, :password, :url)", &[
-                (":name",     name),
-                (":username", username),
-                (":password", password),
-                (":url",      url),
-        ])?;
+    pub fn create(&mut self, login: &Login) -> Result<()> {
+        self.conn.execute(
+            "insert into login (name, username, password, url, favorite, archived) values (?1, ?2, ?3, ?4, ?5, ?6)",
+            params![login.name, login.username, login.password, login.url, login.favorite, login.archived]
+        )?;
+
         Ok(())
     }
 

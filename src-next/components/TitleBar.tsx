@@ -5,7 +5,8 @@ import { useContext, useState } from "react";
 import LockStateContext from "@/components/LockStateContext";
 import { useRouter } from "next/navigation";
 import { invoke } from "@tauri-apps/api";
-import CreateLoginModal from "@/components/CreateLoginModal";
+import EditLoginModal from "@/components/EditLoginModal";
+import Login from "@/types/Login";
 
 export default function TitleBar() {
     const router = useRouter();
@@ -17,6 +18,12 @@ export default function TitleBar() {
         setUnlocked(false);
         router.replace("/");
         await invoke("close_secretstore");
+    }
+
+    async function createLogin(login: Login) {
+        console.log("createLogin received: ", login);
+        await invoke("create_new_login", { login });
+        location.reload(); // todo: replace this reload with something better
     }
 
     return (
@@ -65,7 +72,7 @@ export default function TitleBar() {
                                 startDecorator={<Add fontSize="medium" />}
                                 onClick={() => setCreateLoginModalOpened(true)}
                             >
-                                New Item
+                                New Login
                             </Typography>
                         </Button>
                     }
@@ -94,7 +101,7 @@ export default function TitleBar() {
                     </IconButton>
                 </Box>
             </Box>
-            <CreateLoginModal open={createLoginModalOpened} setOpen={setCreateLoginModalOpened} />
+            <EditLoginModal onSave={createLogin} open={createLoginModalOpened} setOpen={setCreateLoginModalOpened} />
         </>
     );
 }

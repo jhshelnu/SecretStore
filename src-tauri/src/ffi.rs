@@ -51,9 +51,9 @@ pub fn get_archived_logins(mutex: MutexStore<'_>) -> Vec<Login> {
 }
 
 #[tauri::command]
-pub fn create_new_login(mutex: MutexStore<'_>, name: String, username: String, password: String, url: String) {
+pub fn create_new_login(mutex: MutexStore<'_>, login: Login) {
     let mut store = mutex.lock().unwrap();
-    store.as_mut().unwrap().create(&name, &username, &password, &url).unwrap();
+    store.as_mut().unwrap().create(&login).unwrap();
 }
 
 #[tauri::command]

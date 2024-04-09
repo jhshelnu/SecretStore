@@ -3,13 +3,22 @@ import Login from "@/types/Login";
 import LoginDetailField from "@/components/LoginDetailField";
 import LoginDetailDropdownMenu from "@/components/LoginDetailDropdownMenu";
 import LoginIcon from "@/components/LoginIcon";
+import EditLoginModal from "@/components/EditLoginModal";
+import { useState } from "react";
 
 type Props = {
     login: Login,
-    updateLogin: (login: Login) => void
+    updateLogin: (login: Login) => Promise<void>
 }
 
 export default function LoginDetail({ login, updateLogin }: Props) {
+    const [editLoginModalOpened, setEditLoginModalOpened] = useState(false);
+
+    async function onSave(login: Login) {
+        await updateLogin(login);
+        setEditLoginModalOpened(false);
+    }
+
     return (
         <Box
             paddingX="1em"
@@ -19,7 +28,7 @@ export default function LoginDetail({ login, updateLogin }: Props) {
             }}
         >
             <Box>
-                <LoginDetailDropdownMenu login={login} updateLogin={updateLogin} sx={{ float: "right" }} />
+                <LoginDetailDropdownMenu login={login} updateLogin={updateLogin} openEditDialog={() => setEditLoginModalOpened(true)} />
             </Box>
             <Card
                 orientation="horizontal"
@@ -58,6 +67,8 @@ export default function LoginDetail({ login, updateLogin }: Props) {
                 label="website"
                 value={login.url}
                 sx={{ marginTop: ".8em" }} />
+
+            <EditLoginModal existingLogin={login} onSave={onSave} open={editLoginModalOpened} setOpen={setEditLoginModalOpened} />
         </Box>
     );
 }

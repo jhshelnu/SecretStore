@@ -5,21 +5,20 @@ import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import MoreVert from "@mui/icons-material/MoreVert";
-import { SxProps } from "@mui/joy/styles/types";
 import { invoke } from "@tauri-apps/api";
 import toast from "react-hot-toast";
 
 type Props = {
     login: Login,
-    updateLogin: (login: Login) => void,
-    sx?: SxProps,
+    updateLogin: (login: Login) => Promise<void>,
+    openEditDialog: () => void,
 }
 
-export default function LoginDetailDropdownMenu({ login, updateLogin, sx }: Props) {
+export default function LoginDetailDropdownMenu({ login, updateLogin, openEditDialog }: Props) {
     async function toggleFavorite() {
         try {
             // swap the favorite status
-            updateLogin({ ...login, favorite: !login.favorite });
+            await updateLogin({ ...login, favorite: !login.favorite });
         } catch (e) {
             toast.error(`Error ${!login.favorite ? "adding login to favorites" : "removing login from favorites"}`, { id: "favoriteError", duration: 2_000 });
         }
@@ -28,7 +27,7 @@ export default function LoginDetailDropdownMenu({ login, updateLogin, sx }: Prop
     async function toggleArchived() {
         try {
             // swap the archived status, this also clears the favorite status
-            updateLogin({ ...login, archived: !login.archived, favorite: false });
+            await updateLogin({ ...login, archived: !login.archived, favorite: false });
             // todo: add success toast message
         } catch (e) {
             toast.error(`Error ${!login.archived ? "archiving login" : "removing login from archive"}`, { id: "favoriteError", duration: 2_000 });
@@ -46,7 +45,7 @@ export default function LoginDetailDropdownMenu({ login, updateLogin, sx }: Prop
             <MenuButton
                 className="hover"
                 slots={{ root: IconButton }}
-                sx={{ ...sx, borderRadius: "10px" }}
+                sx={{ float: "right", borderRadius: "10px" }}
             >
                 <MoreVert />
             </MenuButton>
@@ -62,6 +61,11 @@ export default function LoginDetailDropdownMenu({ login, updateLogin, sx }: Prop
                 {!login.archived &&
                     <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={toggleFavorite}>
                         {login.favorite ? "Remove from Favorites" : "Add to Favorites"}
+                    </MenuItem>
+                }
+                {!login.archived &&
+                    <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={openEditDialog}>
+                        Edit
                     </MenuItem>
                 }
                 <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={toggleArchived}>{login.archived ? "Remove from Archived" : "Archive"}</MenuItem>
