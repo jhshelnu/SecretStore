@@ -36,21 +36,29 @@ export default function Logins() {
         }
     }
 
+    async function refetchLogins() {
+        const logins = await invoke<Login[]>(getMethodByFilter(filter));
+        setLogins(logins);
+    }
+
     async function updateLogin(updatedLogin: Login) {
-        // todo: this method should be updated to handle the case where the updated login no longer fits the current filter
-        //  - new list should not have the login in it: either remove it or simply refetch at least
-        //  - clear currently selected login
-        const updatedLogins = logins.map(login => login.id === updatedLogin.id ? updatedLogin : login);
-        invoke("update_login", { login: updatedLogin })
-            .then(() => setLogins(updatedLogins));
-            // it's on the caller of this method to handle errors
+        await invoke("update_login", { login: updatedLogin });
+        await refetchLogins();
+    }
+
+    async function deleteLogin(login: Login) {
+        await invoke("delete_login", { id: login.id });
+        await refetchLogins();
+        if (login.id === selectedLoginId) {
+            setSelectedLoginId(null);
+        }
     }
 
     return (
         <Box display="flex" flexDirection="row" height="inherit">
             <LoginsSidebar filter={filter} setFilter={setFilter} />
             <LoginsList logins={logins} selectedLogin={selectedLogin} setSelectedLoginId={setSelectedLoginId} />
-            {selectedLogin && <LoginDetail login={selectedLogin} updateLogin={updateLogin} />}
+            {selectedLogin && <LoginDetail login={selectedLogin} updateLogin={updateLogin} deleteLogin={deleteLogin} />}
         </Box>
     );
 }

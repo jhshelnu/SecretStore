@@ -5,16 +5,16 @@ import Menu from "@mui/joy/Menu";
 import MenuButton from "@mui/joy/MenuButton";
 import MenuItem from "@mui/joy/MenuItem";
 import MoreVert from "@mui/icons-material/MoreVert";
-import { invoke } from "@tauri-apps/api";
 import toast from "react-hot-toast";
 
 type Props = {
     login: Login,
     updateLogin: (login: Login) => Promise<void>,
+    deleteLogin: (login: Login) => Promise<void>,
     openEditDialog: () => void,
 }
 
-export default function LoginDetailDropdownMenu({ login, updateLogin, openEditDialog }: Props) {
+export default function LoginDetailDropdownMenu({ login, updateLogin, deleteLogin, openEditDialog }: Props) {
     async function toggleFavorite() {
         try {
             // swap the favorite status
@@ -28,16 +28,21 @@ export default function LoginDetailDropdownMenu({ login, updateLogin, openEditDi
         try {
             // swap the archived status, this also clears the favorite status
             await updateLogin({ ...login, archived: !login.archived, favorite: false });
-            // todo: add success toast message
+            if (!login.archived) {
+                toast("Archived login", { id: "archiveSuccess", duration: 2_000 });
+            }
         } catch (e) {
             toast.error(`Error ${!login.archived ? "archiving login" : "removing login from archive"}`, { id: "favoriteError", duration: 2_000 });
         }
     }
 
-    async function deleteLogin() {
-        // todo: consider adding confirmation dialog with success toast
-        await invoke("delete_login", { id: login.id });
-        location.reload();
+    async function handleDeleteLogin() {
+        try {
+            await deleteLogin(login);
+            toast("Deleted login", { id: "deleteSuccess", duration: 2_000 });
+        } catch (e) {
+            toast.error("Error deleting login", { id: "deleteError", duration: 2_000 });
+        }
     }
 
     return (
@@ -69,7 +74,7 @@ export default function LoginDetailDropdownMenu({ login, updateLogin, openEditDi
                     </MenuItem>
                 }
                 <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={toggleArchived}>{login.archived ? "Remove from Archived" : "Archive"}</MenuItem>
-                <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={deleteLogin}>Delete</MenuItem>
+                <MenuItem className="solid-hover" sx={{ borderRadius: "6px" }} onClick={handleDeleteLogin}>Delete</MenuItem>
             </Menu>
         </Dropdown>
     );

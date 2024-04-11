@@ -9,9 +9,10 @@ import { useState } from "react";
 type Props = {
     login: Login,
     updateLogin: (login: Login) => Promise<void>
+    deleteLogin: (login: Login) => Promise<void>
 }
 
-export default function LoginDetail({ login, updateLogin }: Props) {
+export default function LoginDetail({ login, updateLogin, deleteLogin }: Props) {
     const [editLoginModalOpened, setEditLoginModalOpened] = useState(false);
 
     async function onSave(login: Login) {
@@ -28,7 +29,7 @@ export default function LoginDetail({ login, updateLogin }: Props) {
             }}
         >
             <Box>
-                <LoginDetailDropdownMenu login={login} updateLogin={updateLogin} openEditDialog={() => setEditLoginModalOpened(true)} />
+                <LoginDetailDropdownMenu login={login} updateLogin={updateLogin} deleteLogin={deleteLogin} openEditDialog={() => setEditLoginModalOpened(true)} />
             </Box>
             <Card
                 orientation="horizontal"
