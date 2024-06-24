@@ -1,6 +1,7 @@
 # SecretStore
 
 This is the source code for SecretStore, a simple password manager written in Rust and Typescript using [Tauri](https://github.com/tauri-apps/tauri) and [Next.js](https://github.com/vercel/next.js).
+
 Unencrypted screts are never written to disk. Encryption is handled by [SQLCipher](https://github.com/sqlcipher/sqlcipher), a fork of [SQLite](https://github.com/sqlite/sqlite), which allows for AES 256-bit encryption.
 
 > [!IMPORTANT]
