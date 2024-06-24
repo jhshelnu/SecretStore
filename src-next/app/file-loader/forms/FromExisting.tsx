@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Button, Input, SvgIcon } from "@mui/joy";
 import { open } from "@tauri-apps/api/dialog";
 import { desktopDir } from "@tauri-apps/api/path";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/tauri";
 import { useRouter } from "next/navigation";
 import LockStateContext from "@/components/LockStateContext";
 

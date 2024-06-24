@@ -4,7 +4,7 @@ import { appWindow } from "@tauri-apps/api/window";
 import { useContext, useState } from "react";
 import LockStateContext from "@/components/LockStateContext";
 import { useRouter } from "next/navigation";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/tauri";
 import EditLoginModal from "@/components/EditLoginModal";
 import Login from "@/types/Login";
 

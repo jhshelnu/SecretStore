@@ -5,9 +5,9 @@ import "./globals.css";
 import React, { useEffect, useState } from "react";
 import { CssVarsProvider } from "@mui/joy";
 import { Toaster } from "react-hot-toast";
-import TitleBar from "@/components/TitleBar";
 import LockStateContext from "@/components/LockStateContext";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/tauri";
+import dynamic from "next/dynamic";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +16,9 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    // this component relies on native tauri api's which are not available server-side or during build-time
+    const TitleBar = dynamic(() => import("../components/TitleBar"), { ssr: false });
+
     const [isUnlocked, setUnlocked] = useState(false);
 
     // don't think this is strictly necessary for release builds,

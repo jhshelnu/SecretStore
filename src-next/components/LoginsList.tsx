@@ -24,7 +24,7 @@ export default function LoginsList({ logins, selectedLogin, setSelectedLoginId }
                         sx={{
                             width: "15em"
                         }}
-                        onClick={() => setSelectedLoginId(login.id)}
+                        onClick={() => setSelectedLoginId(login.id ?? null)}
                     >
                         <LoginIcon
                             url={login.url}

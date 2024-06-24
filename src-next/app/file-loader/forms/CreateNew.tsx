@@ -5,7 +5,7 @@ import LockStateContext from "@/components/LockStateContext";
 import { save } from "@tauri-apps/api/dialog";
 import { desktopDir } from "@tauri-apps/api/path";
 import { ErrorOutline } from "@mui/icons-material";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/tauri";
 import toast from "react-hot-toast";
 
 export default function CreateNew() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { invoke } from "@tauri-apps/api";
+import { invoke } from "@tauri-apps/api/tauri";
 import { Box } from "@mui/joy";
 import Login from "@/types/Login";
 import LoginDetail from "@/components/LoginDetail";

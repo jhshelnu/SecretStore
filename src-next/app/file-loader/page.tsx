@@ -2,14 +2,17 @@
 
 import { Box, Button, ButtonGroup, Typography } from "@mui/joy";
 import { useState } from "react";
-import FromExisting from "@/app/file-loader/forms/FromExisting";
-import CreateNew from "@/app/file-loader/forms/CreateNew";
+import dynamic from "next/dynamic";
 
 enum FileLoadType {
     NEW, EXISTING
 }
 
 export default function FileLoader() {
+    // these forms rely on native tauri api's which are not available server-side or during build-time
+    const FromExisting = dynamic(() => import("./forms/FromExisting"), { ssr: false });
+    const CreateNew = dynamic(() => import("./forms/CreateNew"), { ssr: false });
+
     const [selectedFileLoadType, setSelectedFileLoadType] = useState<FileLoadType | null>(null);
 
     return (
